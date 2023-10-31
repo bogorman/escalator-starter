@@ -123,6 +123,7 @@ project frontend
 Terminal3
 ```
 export NODE_OPTIONS=--openssl-legacy-provider
+npm install
 npm start
 ```
 

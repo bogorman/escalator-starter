@@ -53,7 +53,15 @@ update the packageName and appName.
     val packageName = "com.escalatorstarter"
     val appName = "EscalatorStarter"
 ```
-7.  run source source_local.sh and then run "sbt dbGenerate" and inspect the output. 
+7.  run
+```
+source source_local.sh
+```
+and then run 
+```
+sbt dbGenerate
+```
+ and inspect the output. 
 
 Check here for the database models. This is compatible with scala and scalajs so these models can be used in JS.
 ```

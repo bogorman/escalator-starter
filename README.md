@@ -33,7 +33,7 @@ ln -s /path-to-the-dir/escalator
 5. we are now going to run the database setup. We have some flyway wrapper commands. 
 
 update the modules/db/migration with your migrations. the structure of the database has great importance and the database generation will try and infer relationships and generate scala code to match it. 
-
+```
 	sbt dbMigrate - migrate the database
 
 	sbt dbSeed - run the seed files located at modules/db/seed
@@ -43,34 +43,40 @@ update the modules/db/migration with your migrations. the structure of the datab
 	sbt dbReset - drop database and reset
 
 	sbt rmGenerated - remove the generated files
+```
 
 6. Before running the "sbt dbGenerate" check the file Codegen.scala file locaated at
 /modules/db/generators/src/main/scala/Codegen.scala
 
 update the packageName and appName.
-
+```
     val packageName = "com.escalatorstarter"
     val appName = "EscalatorStarter"
-
+```
 7. run "sbt dbGenerate" and inspect the output. 
 
 Check here for the database models. This is compatible with scala and scalajs so these models can be used in JS.
+```
 /modules/shared/src/main/scala/com/escalatorstarter/models
+```
 
 For the DB access check here.
+```
 /modules/persistence/src/main/scala/postgres/tables
+```
 
 You can search the project for the string "THIS FILE IS AUTO-GENERATED" to see which of the files have been generated. You need to be able to run "sbt dbGenerate" after the database changes so do not edit these files. 
 
 If you need custom DB access methods then create a custom file derived from the table here.
+```
 /modules/core/src/main/scala/com/escalatorstarter/core/repositories/
-
+```
 Update the EscalatorStarterRepository to reflect these changes. 
 
-If the plural/singular conversion is not working as expected you can update your mappings here.
+If the plural/singular naming convention conversion goes not generate propler table/column names in the models then you can add custom mappings here.
+```
 /modules/common/src/main/scala/com/escalatorstarter/persistence/CustomNameMapper.scala 
-
-
+```
 
 8. setup the UI. Use a bootstrap V5 starter template. for e.g
 
@@ -85,18 +91,22 @@ in the public folder rename index.html to volt.html
 9.  TIME TO START. Open 3 terminals
 
 Terminal1
+```
 sbt backend/run
+```
 
 Terminal2
+```
 sbt 
 project frontend
 ~fastLinkJS
+```
 
 Terminal3
+```
 export NODE_OPTIONS=--openssl-legacy-provider
 npm start
-
-
+```
 
 10. open
 localhost:30190/register

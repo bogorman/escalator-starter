@@ -45,7 +45,7 @@ update the modules/db/migration with your migrations. the structure of the datab
 	sbt rmGenerated - remove the generated files
 ```
 
-6. Before running the "sbt dbGenerate" check the file Codegen.scala file locaated at
+6. Before running the "sbt dbGenerate" check the file Codegen.scala file located at
 /modules/db/generators/src/main/scala/Codegen.scala
 
 update the packageName and appName.
@@ -53,7 +53,7 @@ update the packageName and appName.
     val packageName = "com.escalatorstarter"
     val appName = "EscalatorStarter"
 ```
-7. run "sbt dbGenerate" and inspect the output. 
+7.  run source source_local.sh and then run "sbt dbGenerate" and inspect the output. 
 
 Check here for the database models. This is compatible with scala and scalajs so these models can be used in JS.
 ```

@@ -109,6 +109,7 @@ in the public folder rename index.html to volt.html
 
 Terminal1
 ```
+./compile
 sbt backend/run
 ```
 

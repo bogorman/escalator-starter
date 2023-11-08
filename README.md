@@ -23,8 +23,10 @@ Opinionated Full stack Scala starter project. Scala with some guide rails.
 
 1. clone this repo and the escalator repo. 
 2. this project will also compil the escalator project so we will symlink the folder to our modules directory. 
+```
 cd modules
 ln -s /path-to-the-dir/escalator
+```
 
 3. we are going to rename the project to what you want. open the rename_project.rb file and change the <CHANGE THIS> variable to be the new name of your project in CamelCase. the project assumes you are using a .com domain. Complete the initial setup with the .com and then rename as needed after. 
 

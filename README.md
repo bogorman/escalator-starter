@@ -23,8 +23,10 @@ Opinionated Full stack Scala starter project. Scala with some guide rails.
 
 1. clone this repo and the escalator repo. 
 2. this project will also compil the escalator project so we will symlink the folder to our modules directory. 
+```
 cd modules
 ln -s /path-to-the-dir/escalator
+```
 
 3. we are going to rename the project to what you want. open the rename_project.rb file and change the <CHANGE THIS> variable to be the new name of your project in CamelCase. the project assumes you are using a .com domain. Complete the initial setup with the .com and then rename as needed after. 
 
@@ -45,7 +47,20 @@ update the modules/db/migration with your migrations. the structure of the datab
 	sbt rmGenerated - remove the generated files
 ```
 
-6. Before running the "sbt dbGenerate" check the file Codegen.scala file locaated at
+ run
+```
+source source_local.sh
+```
+and then
+```
+sbt dbMigrate
+```
+and
+```
+sbt dbSeed
+```
+
+6. Before running the "sbt dbGenerate" check the file Codegen.scala file located at
 /modules/db/generators/src/main/scala/Codegen.scala
 
 update the packageName and appName.
@@ -53,7 +68,11 @@ update the packageName and appName.
     val packageName = "com.escalatorstarter"
     val appName = "EscalatorStarter"
 ```
-7. run "sbt dbGenerate" and inspect the output. 
+7.  run 
+```
+sbt dbGenerate
+```
+ and inspect the output. 
 
 Check here for the database models. This is compatible with scala and scalajs so these models can be used in JS.
 ```
@@ -92,6 +111,7 @@ in the public folder rename index.html to volt.html
 
 Terminal1
 ```
+./compile
 sbt backend/run
 ```
 
@@ -105,6 +125,7 @@ project frontend
 Terminal3
 ```
 export NODE_OPTIONS=--openssl-legacy-provider
+npm install
 npm start
 ```
 

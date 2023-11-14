@@ -6,7 +6,6 @@ import escalator.util.logging.Logger
 import escalator.util.monitoring.Monitoring
 
 import monix.execution.Scheduler
-// import com.cryptoconsole.persistence.CryptoConsoleDatabase
 
 import com.escalatorstarter.persistence.EscalatorStarterDatabase
 import com.escalatorstarter.common.persistence.postgres.PostgresDatabase

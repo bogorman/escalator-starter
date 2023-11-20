@@ -1,13 +1,16 @@
 require 'find'
 require 'fileutils'
 
-old_app = "EscalatorStarter"
-new_app = "<CHANGE THIS>"
+OLD_PACKAGE = "com.escalatorstarter"
+NEW_PACKAGE = "<CHANGE THIS>"
 
-old_name = old_app.downcase
-new_name = new_app.downcase
+OLD_APP = "EscalatorStarter"
+NEW_APP = "<CHANGE THIS>"
 
-if new_app.include?("CHANGE THIS")
+OLD_NAME = OLD_APP.downcase
+NEW_NAME = NEW_APP.downcase
+
+if NEW_APP.include?("CHANGE THIS")
 	raise "SET APP NAME"
 end
 
@@ -22,58 +25,98 @@ def should_ignore?(e)
 	false
 end
 
-Find.find('.') { |e| 
-	if should_ignore?(e)
-		puts "Skipping #{e}"
-		next
+def move_folder(from_path,to_path,package = false)
+	puts "Moving from #{from_path} -> #{to_path}"
+
+	if (!package && from_path.split("/").last != to_path.split(".").last)
+		FileUtils.mv from_path, to_path , :force => true
+	else
+		parent_from_path = from_path.chomp("/"+from_path.split("/").last)
+		parent_to_path = to_path.chomp("/"+to_path.split("/").last)
+
+		puts "parent_from_path: #{parent_from_path}"
+		puts "parent_to_path: #{parent_to_path}"
+
+		FileUtils.mv parent_from_path, parent_to_path , :force => true
 	end
+end
 
-	if File.directory?(e)
-		if e.end_with?(old_name)
-			# puts e
-			from_path = e
-			to_path = e.gsub(old_name,new_name)
-			puts "Moving from #{from_path} -> #{to_path}"
-			FileUtils.mv from_path, to_path , :force => true
-		elsif e.end_with?(old_app)
-			# puts e
-			from_path = e
-			to_path = e.gsub(old_app,new_app)
-			puts "Moving from #{from_path} -> #{to_path}"
-			FileUtils.mv from_path, to_path , :force => true			
-		end
-	end
-}
-
-# #do files
-Find.find('.') { |e| 
-	if should_ignore?(e)
-		puts "Skipping #{e}"
-		next
-	end
-
-	if !File.directory?(e)
-		#is valid file
-		path = e.to_s
-		if (path.end_with?(".sbt") || path.end_with?(".scala") || path.end_with?(".java") || path.end_with?(".conf") || path.end_with?(".sh") || path.end_with?(".json")) 	
-			##### replace the contents
-			replace1 = "'s/#{old_name}/#{new_name}/g'"
-			command1 = "gsed -i #{replace1} #{path}"
-			# puts command1
-			`#{command1}`
-
-			replace2 = "'s/#{old_app}/#{new_app}/g'"
-			command2 = "gsed -i #{replace2} #{path}"
-			# puts command2
-			`#{command2}`			
+def rename_folders(reason)
+	Find.find('.') { |e| 
+		if should_ignore?(e)
+			puts "Skipping #{e}"
+			next
 		end
 
-		filename = File.basename(path) 
-		new_filename = filename.gsub(old_name,new_name).gsub(old_app,new_app)
+		if File.directory?(e)
+			if e.end_with?(OLD_PACKAGE.gsub(".","/"))
+				from_path = e
+				to_path = e.gsub(OLD_PACKAGE.gsub(".","/"),NEW_PACKAGE.gsub(".","/"))
+				puts "A Moving from #{from_path} -> #{to_path}"
+				move_folder(from_path,to_path,true)				
+			end
 
-		if (filename != new_filename)
-			puts "Renaming file from #{filename} -> #{new_filename}"
-			File.rename(path, path.gsub(filename,new_filename))
+			if e.end_with?(OLD_NAME)
+				# puts e
+				from_path = e
+				to_path = e.gsub(OLD_NAME,NEW_NAME)
+				puts "B Moving from #{from_path} -> #{to_path}"
+				move_folder(from_path,to_path)
+			end
+
+			if e.end_with?(OLD_APP)
+				# puts e
+				from_path = e
+				to_path = e.gsub(OLD_APP,NEW_APP)
+				puts "C Moving from #{from_path} -> #{to_path}"
+				move_folder(from_path,to_path)			
+			end
 		end
-	end
-}
+	}
+end
+
+def rename_files(reason)
+	# #do files
+	Find.find('.') { |e| 
+		if should_ignore?(e)
+			puts "Skipping #{e}"
+			next
+		end
+
+		if !File.directory?(e)
+			#is valid file
+			path = e.to_s
+			if (path.end_with?(".sbt") || path.end_with?(".scala") || path.end_with?(".java") || path.end_with?(".conf") || path.end_with?(".sh") || path.end_with?(".json")) 	
+				##### replace the contents
+				replace1 = "'s/#{OLD_NAME}/#{NEW_NAME}/g'"
+				command1 = "gsed -i #{replace1} #{path}"
+				# puts command1
+				`#{command1}`
+
+				replace2 = "'s/#{OLD_APP}/#{NEW_APP}/g'"
+				command2 = "gsed -i #{replace2} #{path}"
+				# puts command2
+				`#{command2}`	
+
+				replace3 = "'s/#{OLD_PACKAGE}/#{NEW_PACKAGE}/g'"
+				command3 = "gsed -i #{replace3} #{path}"
+				# puts command3
+				`#{command3}`						
+			end
+
+			filename = File.basename(path) 
+			new_filename = filename.gsub(OLD_NAME,NEW_NAME).gsub(OLD_APP,NEW_APP)
+
+			if (filename != new_filename)
+				puts "Renaming file from #{filename} -> #{new_filename}"
+				File.rename(path, path.gsub(filename,new_filename))
+			end
+		end
+	}
+end
+
+rename_folders("pass1")
+rename_folders("pass2")
+
+rename_files("pass1")
+

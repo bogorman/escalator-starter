@@ -1,4 +1,4 @@
-package com.escalatorstarter.http.server.services
+package com.escalatorstarter.http.server.auth
 
 import akka.http.scaladsl.server.RejectionHandler
 // import akka.http.scaladsl.model.HttpResponse

@@ -74,21 +74,6 @@ object EscalatorStarterHttpServer {
     bindingFuture
   }
 
-  // val cryptoConsoleHtml: String = Source.fromResource("web/escalatorstarter.html").mkString
-  //   .replace("${JS_VERSION}", com.escalatorstarter.Conventions.version.toString)  
-
-  // val chartsResponse = HttpResponse(entity = HttpEntity(ContentTypes.`text/html(UTF-8)`, cryptoConsoleHtml))
-
-  // val rpcController: SharedApiController = SharedApiController()
-
-  // def rpcPublicRoutes(rpcController: SharedApiController): Route = {
-  //   // import monix.execution.Scheduler.Implicits.global
-  //   implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
-
-  //   AutowireAkkaHttpRoute("rpc", _.route[SharedApi](rpcController))
-  // }
-
-
   def route(
     auth: AdminAuthentication
   )(implicit
@@ -103,30 +88,8 @@ object EscalatorStarterHttpServer {
     timestampProvider: TimestampProvider       
   ): Route = {
 
-    // pathSingleSlash(get(redirect(Uri./.withPath(Path("charts/")), StatusCodes.TemporaryRedirect))) ~
-      // path("charts"./)(get(complete(chartsResponse))) ~
-      // path("frontend.js")(get(getFromResource("frontend-opt.js"))) ~
-      // pathPrefix("img")(get(getFromResourceDirectory("web/img"))) ~
       val routes = new EscalatorStarterRoutes()
       routes.route
-      // val rpcController: SharedApiController = SharedApiController()
 
-      // FeedWebsocketController.controller ~
-      // routes.route
-       // ~ 
-       // rpcPublicRoutes(rpcController)
-
-
-      
-       // ~
-      // AdminController.controller(auth)
-
-      // path("test") {
-    	// 	get {
-    	// 		complete("ok")	
-    	// 	}
-      // }
-
-      // 
   }
 }

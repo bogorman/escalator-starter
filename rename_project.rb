@@ -10,6 +10,7 @@ NEW_APP = "<CHANGE THIS>"
 OLD_NAME = OLD_APP.downcase
 NEW_NAME = NEW_APP.downcase
 
+
 if NEW_APP.include?("CHANGE THIS")
 	raise "SET APP NAME"
 end
@@ -88,20 +89,25 @@ def rename_files(reason)
 			path = e.to_s
 			if (path.end_with?(".sbt") || path.end_with?(".scala") || path.end_with?(".java") || path.end_with?(".conf") || path.end_with?(".sh") || path.end_with?(".json")) 	
 				##### replace the contents
-				replace1 = "'s/#{OLD_NAME}/#{NEW_NAME}/g'"
+				replace1 = "'s/#{OLD_PACKAGE.downcase}/#{NEW_PACKAGE.downcase}/g'"
 				command1 = "gsed -i #{replace1} #{path}"
 				# puts command1
 				`#{command1}`
 
-				replace2 = "'s/#{OLD_APP}/#{NEW_APP}/g'"
+				replace2 = "'s/#{OLD_PACKAGE}/#{NEW_PACKAGE}/g'"
 				command2 = "gsed -i #{replace2} #{path}"
-				# puts command2
-				`#{command2}`	
+				# puts command1
+				`#{command2}`
 
-				replace3 = "'s/#{OLD_PACKAGE}/#{NEW_PACKAGE}/g'"
+				replace3 = "'s/#{OLD_APP}/#{NEW_APP}/g'"
 				command3 = "gsed -i #{replace3} #{path}"
+				# puts command2
+				`#{command3}`	
+
+				replace4 = "'s/#{OLD_NAME}/#{NEW_NAME}/g'"
+				command4 = "gsed -i #{replace4} #{path}"
 				# puts command3
-				`#{command3}`						
+				`#{command4}`						
 			end
 
 			filename = File.basename(path) 
@@ -119,4 +125,3 @@ rename_folders("pass1")
 rename_folders("pass2")
 
 rename_files("pass1")
-

@@ -31,9 +31,12 @@ object Codegen {
     val packageName = "com.escalatorstarter"
     val appName = "EscalatorStarter"
 
+    val packageDomain = packageName.split(".")(0)
+    val packageAppName = packageName.split(".")(1)
+
     val appFolder = System.getenv().get("PWD")
 
-    val modelsBaseFolder = s"${appFolder}/modules/shared/src/main/scala/com/escalatorstarter/models"
+    val modelsBaseFolder = s"${appFolder}/modules/shared/src/main/scala/${packageDomain}/${packageAppName}/models"
     val persistenceBaseFolder = s"${appFolder}/modules/persistence/src/main/scala/"
 
     val databaseFolder = s"${persistenceBaseFolder}/database/"

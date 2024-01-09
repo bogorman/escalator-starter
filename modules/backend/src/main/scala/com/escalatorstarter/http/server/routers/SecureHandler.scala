@@ -1,17 +1,17 @@
 package com.escalatorstarter.http.server
 
-import akka.http.scaladsl.model.HttpMethods._
-import akka.http.scaladsl.model.HttpResponse
-import akka.http.scaladsl.model.headers._
-import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.{Directive0, Route}
+import org.apache.pekko.http.scaladsl.model.HttpMethods._
+import org.apache.pekko.http.scaladsl.model.HttpResponse
+import org.apache.pekko.http.scaladsl.model.headers._
+import org.apache.pekko.http.scaladsl.server.Directives._
+import org.apache.pekko.http.scaladsl.server.{Directive0, Route}
 
 import com.escalatorstarter.http.server.auth._
 // import com.escalatorstarter.http.server.services._
 
-import akka.http.scaladsl.server.Directive1
-import akka.http.scaladsl.server.directives.{ BasicDirectives, HeaderDirectives, RouteDirectives }
-import akka.http.scaladsl.server._
+import org.apache.pekko.http.scaladsl.server.Directive1
+import org.apache.pekko.http.scaladsl.server.directives.{ BasicDirectives, HeaderDirectives, RouteDirectives }
+import org.apache.pekko.http.scaladsl.server._
 
 trait SecureHandler extends SecureService {
   import SecureProtocol._

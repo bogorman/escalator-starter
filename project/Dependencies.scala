@@ -9,25 +9,54 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 
 object Dependencies {
-  val resolvers = Seq(
-    // Resolver.bintrayRepo("kamon-io", "releases"),
-    Resolver.sonatypeRepo("releases"),
-    // "custom-repo" at "https://s3-eu-west-1.amazonaws.com/bm-jars/",
-    // "Kolich repo" at "https://markkolich.github.io/repo"
-    Resolver.JCenterRepository
-  )
+  // val snapsotResolvers = Seq(
+  //   // Resolver.bintrayRepo("kamon-io", "releases"),
+  //   Resolver.sonatypeOssRepos("snapshots")
+  //   // "custom-repo" at "https://s3-eu-west-1.amazonaws.com/bm-jars/",
+  //   // "Kolich repo" at "https://markkolich.github.io/repo"
+  //   // Resolver.JCenterRepository,
+  // )
 
-  val akkaActor: ModuleID = "com.typesafe.akka" %% "akka-actor" % Versions.akkaVersion
-  val akkaSlf4j: ModuleID = "com.typesafe.akka" %% "akka-slf4j" % Versions.akkaVersion
-  val akkaStream: ModuleID = "com.typesafe.akka" %% "akka-stream" % Versions.akkaVersion
-  val akkaRemote: ModuleID = "com.typesafe.akka" %% "akka-remote" % Versions.akkaVersion
+  // val releaseResolvers = Seq(
+  //     Resolver.sonatypeRepo("releases")
+  // )
 
-  val akkaCluster: ModuleID = "com.typesafe.akka" %% "akka-cluster" % Versions.akkaVersion
-  val akkaPersistence: ModuleID = "com.typesafe.akka" %% "akka-persistence" % Versions.akkaVersion
+   // val resolvers: Seq[Resolver] = Seq(
+   //    // Resolver.mavenLocal,
+   //    // Resolver.mavenCentral,
+   //    Resolver.sonatypeRepo("releases")
+   //  ) ++ Resolver.sonatypeOssRepos("snapshots")
 
-  val akkaHttp: ModuleID = "com.typesafe.akka" %% "akka-http" % Versions.akkaHttpVersion
-  val akkaHttpCaching: ModuleID = "com.typesafe.akka" %% "akka-http-caching" % Versions.akkaHttpVersion
-  val akkaSprayJson: ModuleID = "com.typesafe.akka" %% "akka-http-spray-json" % Versions.akkaHttpVersion
+   val resolvers: Seq[Resolver] = Resolver.sonatypeOssRepos("snapshots")
+
+
+  // val akkaActor: ModuleID = "com.typesafe.akka" %% "akka-actor" % Versions.akkaVersion
+  // val akkaSlf4j: ModuleID = "com.typesafe.akka" %% "akka-slf4j" % Versions.akkaVersion
+  // val akkaStream: ModuleID = "com.typesafe.akka" %% "akka-stream" % Versions.akkaVersion
+  // val akkaRemote: ModuleID = "com.typesafe.akka" %% "akka-remote" % Versions.akkaVersion
+
+  // // val akkaCluster: ModuleID = "com.typesafe.akka" %% "akka-cluster" % Versions.akkaVersion
+  // // val akkaPersistence: ModuleID = "com.typesafe.akka" %% "akka-persistence" % Versions.akkaVersion
+
+  // val akkaHttp: ModuleID = "com.typesafe.akka" %% "akka-http" % Versions.akkaHttpVersion
+  // // val akkaHttpCaching: ModuleID = "com.typesafe.akka" %% "akka-http-caching" % Versions.akkaHttpVersion
+  // val akkaSprayJson: ModuleID = "com.typesafe.akka" %% "akka-http-spray-json" % Versions.akkaHttpVersion
+
+  // val akkaHttpCirce: ModuleID = "de.heikoseeberger" %% "akka-http-circe" % Versions.akkaHttpJson
+  // // val akkaHttpUpickle: ModuleID = "de.heikoseeberger" %% "akka-http-upickle" % Versions.akkaHttpJson
+  // // val akkaHttpPlay: ModuleID = "de.heikoseeberger" %% "akka-http-play-json" % Versions.akkaHttpJson
+
+
+  val pekkoActor: ModuleID = "org.apache.pekko" %% "pekko-actor" % Versions.pekkoVersion
+  val pekkoSlf4j: ModuleID = "org.apache.pekko" %% "pekko-slf4j" % Versions.pekkoVersion
+  val pekkoStream: ModuleID = "org.apache.pekko" %% "pekko-stream" % Versions.pekkoVersion
+  val pekkoRemote: ModuleID = "org.apache.pekko" %% "pekko-remote" % Versions.pekkoVersion
+
+  val pekkoHttp: ModuleID = "org.apache.pekko" %% "pekko-http" % Versions.pekkoHttpVersion
+  val pekkoSprayJson: ModuleID = "org.apache.pekko" %% "pekko-http-spray-json" % Versions.pekkoHttpVersion
+  // val pekkoHttpCirce: ModuleID = "org.mdedetrich" %% "pekko-http-circe" % Versions.pekkoHttpVersion
+  val pekkoHttpCirce: ModuleID = "com.github.pjfanning" %% "pekko-http-circe" % "0.0.0_1-2d3e5833-SNAPSHOT"
+  //Versions.pekkoHttpVersion
 
   val commonsLang3: ModuleID = "org.apache.commons" % "commons-lang3" % "3.4"
 
@@ -66,10 +95,6 @@ object Dependencies {
   val circeRefined: ModuleID = "io.circe" %% "circe-refined" % Versions.circeVersion
 
   val enumeratum: ModuleID = "com.beachape" %% "enumeratum" % Versions.enumeratumVersion
-
-  val akkaHttpCirce: ModuleID = "de.heikoseeberger" %% "akka-http-circe" % Versions.akkaHttpJson
-  val akkaHttpUpickle: ModuleID = "de.heikoseeberger" %% "akka-http-upickle" % Versions.akkaHttpJson
-  val akkaHttpPlay: ModuleID = "de.heikoseeberger" %% "akka-http-play-json" % Versions.akkaHttpJson
 
   val upickle: ModuleID = "com.lihaoyi" %% "upickle" % Versions.upickleVersion
 
@@ -128,12 +153,14 @@ object Dependencies {
 
   val autowire: ModuleID = "com.lihaoyi" %% "autowire" % Versions.autowire
 
+  val scalaParserCombinators = "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2"
+
   val commonDependencies = Seq(
-    akkaSlf4j,
-    akkaHttp,
-    akkaHttpCaching,
-    akkaSprayJson,
-    akkaStream,
+    pekkoSlf4j,
+    pekkoHttp,
+    // akkaHttpCaching,
+    pekkoSprayJson,
+    pekkoStream,
     //
     sttpCore,
     sttpCirce,
@@ -173,19 +200,20 @@ object Dependencies {
     jacksonJoda,
     //
     sendgrid,
-    commonsLang3
+    commonsLang3,
+    scalaParserCombinators
   )
 
   val backendDependencies = Seq(
-    akkaActor,
-    akkaSlf4j,
-    akkaHttp,
-    akkaHttpCaching,
-    akkaStream,
+    pekkoActor,
+    pekkoSlf4j,
+    pekkoHttp,
+    // akkaHttpCaching,
+    pekkoStream,
     // akkaCluster,
-    akkaHttpCirce,
-    akkaHttpUpickle,
-    akkaHttpPlay,
+    pekkoHttpCirce,
+    // akkaHttpUpickle,
+    // akkaHttpPlay,
     // 
     sttpCore,
     sttpCirce,
@@ -231,8 +259,10 @@ object Dependencies {
     javaWebSocket,
     lombok,
 
-    autowire
+    autowire,
     // wireo
+
+    scalaParserCombinators
   )
 
   val sharedDependencies = Seq(

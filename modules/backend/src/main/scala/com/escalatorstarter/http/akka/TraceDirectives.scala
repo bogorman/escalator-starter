@@ -1,7 +1,7 @@
 package com.escalatorstarter.http.akka
 
-import akka.http.scaladsl.server.{Directive, Directive0, Directive1, Route}
-import akka.http.scaladsl.server.Directives.{extractClientIP, mapInnerRoute, mapResponse}
+import org.apache.pekko.http.scaladsl.server.{Directive, Directive0, Directive1, Route}
+import org.apache.pekko.http.scaladsl.server.Directives.{extractClientIP, mapInnerRoute, mapResponse}
 import com.typesafe.scalalogging.LazyLogging
 
 import java.util.concurrent.atomic.AtomicLong

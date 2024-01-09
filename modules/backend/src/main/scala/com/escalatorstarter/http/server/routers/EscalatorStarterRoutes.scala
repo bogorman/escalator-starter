@@ -1,9 +1,9 @@
 package com.escalatorstarter.http.server
 
-import akka.http.scaladsl.model.StatusCodes
-import akka.http.scaladsl.server._
-import akka.http.scaladsl.model._
-import akka.http.scaladsl.model.ContentTypes.{ `application/json`, `text/plain(UTF-8)` }
+import org.apache.pekko.http.scaladsl.model.StatusCodes
+import org.apache.pekko.http.scaladsl.server._
+import org.apache.pekko.http.scaladsl.model._
+import org.apache.pekko.http.scaladsl.model.ContentTypes.{ `application/json`, `text/plain(UTF-8)` }
 
 // import starter.data.Error
 // import starter.data.PostRepr
@@ -15,7 +15,7 @@ import unindent._
 
 import java.time.Instant
 
-// import akka.http.scaladsl.model.StatusCodes.{BadRequest, InternalServerError, OK, Unauthorized}
+// import org.apache.pekko.http.scaladsl.model.StatusCodes.{BadRequest, InternalServerError, OK, Unauthorized}
 
 import models.users._
 import com.escalatorstarter.models._
@@ -195,13 +195,13 @@ class EscalatorStarterRoutes()(implicit repository: EscalatorStarterRepository) 
     // (handleRejections(apiRejectionHandler) & handleExceptions(apiExceptionHandler)) {
       pathPrefix("api") {
       	path("now2") {
-            authenticate() { session ⇒
+            authenticate() { session =>
       		    get {
       		      complete(StatusCodes.OK -> Instant.now.toString)
       		    }
             }
     		} ~ path("me") {
-            authenticate() { session ⇒
+            authenticate() { session =>
               get {
                 // complete(StatusCodes.OK -> Instant.now.toString)
                 onSuccess(repository.users.getByUsername(Username(session.username))) { userOpt =>
@@ -218,7 +218,7 @@ class EscalatorStarterRoutes()(implicit repository: EscalatorStarterRepository) 
               }
             }
         } ~ path("am-i-admin") {
-            authenticate() { session ⇒
+            authenticate() { session =>
               get {
                 // complete(StatusCodes.OK -> Instant.now.toString)
                 // onSuccess(repository.users.getByUsername(Username(session.username))) { user =>
@@ -232,7 +232,7 @@ class EscalatorStarterRoutes()(implicit repository: EscalatorStarterRepository) 
               }
             }
           } ~ path("logoff") {
-            authenticate() { session ⇒
+            authenticate() { session =>
               get {
                 // complete(StatusCodes.OK -> Instant.now.toString)
                 // onSuccess(repository.users.getByUsername(Username(session.username))) { user =>

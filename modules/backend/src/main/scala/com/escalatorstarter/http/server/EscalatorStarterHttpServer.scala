@@ -3,14 +3,14 @@ package com.escalatorstarter.http.server
 import scala.concurrent.{ExecutionContext, Future}
 import scala.io.Source
 
-import akka.actor.ActorSystem
-import akka.http.scaladsl.Http
-import akka.http.scaladsl.Http.ServerBinding
-import akka.http.scaladsl.model.Uri.Path
-import akka.http.scaladsl.model._
-import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.Route
-import akka.stream.Materializer
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.http.scaladsl.Http
+import org.apache.pekko.http.scaladsl.Http.ServerBinding
+import org.apache.pekko.http.scaladsl.model.Uri.Path
+import org.apache.pekko.http.scaladsl.model._
+import org.apache.pekko.http.scaladsl.server.Directives._
+import org.apache.pekko.http.scaladsl.server.Route
+import org.apache.pekko.stream.Materializer
 
 import escalator.websocket.Http
 
@@ -31,15 +31,6 @@ import com.escalatorstarter.util._
 import com.escalatorstarter.http.server.controllers._
 import com.escalatorstarter.shared.api._
 
-
-
-// import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
-// import io.circe.Json
-// import io.circe.Decoder
-// import io.circe.Encoder
-// import io.circe.generic.auto._
-// import io.circe.parser._
-// import io.circe.syntax._
 
 object EscalatorStarterHttpServer {
   def start(

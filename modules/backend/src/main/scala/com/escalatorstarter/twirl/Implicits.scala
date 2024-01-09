@@ -1,8 +1,8 @@
 package com.escalatorstarter.twirl
 
-import akka.http.scaladsl.marshalling.{Marshaller, _}
-import akka.http.scaladsl.model.MediaType
-import akka.http.scaladsl.model.MediaTypes._
+import org.apache.pekko.http.scaladsl.marshalling.{Marshaller, _}
+import org.apache.pekko.http.scaladsl.model.MediaType
+import org.apache.pekko.http.scaladsl.model.MediaTypes._
 import play.twirl.api.{Html, Txt, Xml}
 
 object Implicits {

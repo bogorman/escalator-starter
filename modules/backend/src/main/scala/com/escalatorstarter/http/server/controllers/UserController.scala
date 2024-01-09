@@ -4,9 +4,9 @@ import java.util.concurrent.Executors
 
 import scala.concurrent.{ExecutionContext, Future}
 
-import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.Route
-import akka.http.scaladsl.server.directives.Credentials
+import org.apache.pekko.http.scaladsl.server.Directives._
+import org.apache.pekko.http.scaladsl.server.Route
+import org.apache.pekko.http.scaladsl.server.directives.Credentials
 
 import escalator.util.logging.Logger
 
@@ -23,10 +23,10 @@ import com.escalatorstarter.core.repositories._
 
 import escalator.util.monix._
 
-import akka.http.scaladsl.model.StatusCodes
-import akka.http.scaladsl.server._
-import akka.http.scaladsl.model._
-import akka.http.scaladsl.model.ContentTypes.{ `application/json`, `text/plain(UTF-8)` }
+import org.apache.pekko.http.scaladsl.model.StatusCodes
+import org.apache.pekko.http.scaladsl.server._
+import org.apache.pekko.http.scaladsl.model._
+import org.apache.pekko.http.scaladsl.model.ContentTypes.{ `application/json`, `text/plain(UTF-8)` }
 import java.time.Instant
 
 object UserController {

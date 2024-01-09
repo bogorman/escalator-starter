@@ -1,7 +1,7 @@
 package com.escalatorstarter.http.server
 
-import de.heikoseeberger.akkahttpcirce.BaseCirceSupport
-import de.heikoseeberger.akkahttpcirce.ErrorAccumulatingUnmarshaller
+import com.github.pjfanning.pekkohttpcirce.BaseCirceSupport
+import com.github.pjfanning.pekkohttpcirce.ErrorAccumulatingUnmarshaller
 import io.circe.Printer
 
 object DropNullKeysPrinter {

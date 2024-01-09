@@ -1,13 +1,13 @@
 package com.escalatorstarter.http.server.auth
 
-import akka.http.scaladsl.server.RejectionHandler
-// import akka.http.scaladsl.model.HttpResponse
+import org.apache.pekko.http.scaladsl.server.RejectionHandler
+// import org.apache.pekko.http.scaladsl.model.HttpResponse
 
-import akka.http.scaladsl.model.StatusCodes.Found
-// import akka.http.scaladsl.model.HttpHeaders.Location
-import akka.http.scaladsl.model.HttpResponse
-import akka.http.scaladsl.model.headers.Location
-import akka.http.scaladsl.model.HttpHeader
+import org.apache.pekko.http.scaladsl.model.StatusCodes.Found
+// import org.apache.pekko.http.scaladsl.model.HttpHeaders.Location
+import org.apache.pekko.http.scaladsl.model.HttpResponse
+import org.apache.pekko.http.scaladsl.model.headers.Location
+import org.apache.pekko.http.scaladsl.model.HttpHeader
 
 import scala.concurrent.ExecutionContext
 
@@ -19,13 +19,13 @@ import scala.concurrent.ExecutionContext
 // import spray.routing.HttpServiceActor
 // extends HttpServiceActor
 
-import akka.http.scaladsl.server.Directive1
-import akka.http.scaladsl.server.directives.{ BasicDirectives, HeaderDirectives, RouteDirectives }
+import org.apache.pekko.http.scaladsl.server.Directive1
+import org.apache.pekko.http.scaladsl.server.directives.{ BasicDirectives, HeaderDirectives, RouteDirectives }
 
 
-// import akka.http.scaladsl.server.RejectionHandler
-// import akka.http.scaladsl.server.Rejection
-import akka.http.scaladsl.server._
+// import org.apache.pekko.http.scaladsl.server.RejectionHandler
+// import org.apache.pekko.http.scaladsl.server.Rejection
+import org.apache.pekko.http.scaladsl.server._
 import com.escalatorstarter.http.server.auth._
 
 // import concurrent.Future
@@ -33,13 +33,13 @@ import com.escalatorstarter.http.server.auth._
 // import scala.util.Failure
 // import scala.concurrent.{ ExecutionContext, Future }
 
-import akka.http.scaladsl.marshalling._
+import org.apache.pekko.http.scaladsl.marshalling._
 
-import akka.http.scaladsl.server.RequestContext
-import akka.http.scaladsl.server.{ Directives, Route }
-import akka.http.scaladsl.model.{ ContentTypes, HttpEntity }
-import akka.http.scaladsl.model.headers._
-import akka.http.scaladsl.model._
+import org.apache.pekko.http.scaladsl.server.RequestContext
+import org.apache.pekko.http.scaladsl.server.{ Directives, Route }
+import org.apache.pekko.http.scaladsl.model.{ ContentTypes, HttpEntity }
+import org.apache.pekko.http.scaladsl.model.headers._
+import org.apache.pekko.http.scaladsl.model._
 import MediaTypes._
 
 object SecureProtocol {
@@ -99,7 +99,7 @@ trait SecureService extends Secure {
 
   protected def redirectToRoute(route: String): HttpResponse = {
     println("redirectToRoute:" + route)
-    HttpResponse(status = Found, headers = List(akka.http.scaladsl.model.headers.Location(route)))
+    HttpResponse(status = Found, headers = List(org.apache.pekko.http.scaladsl.model.headers.Location(route)))
   }
 
   private def authBypassCheck: Option[SessionData] = {

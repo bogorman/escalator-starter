@@ -4,6 +4,10 @@ import escalator.db.generators._
 
 class AppCustomGenerator extends CustomGenerator 
 {
+	def setup(): Boolean = {
+		true
+	}
+
 	def processFileData(fileData: String): String = {
 		// fileData.replace("instrumentSymbol: ExchangeIdent","instrumentSymbol: InstrumentSymbol")
 		fileData
@@ -40,11 +44,21 @@ class AppCustomGenerator extends CustomGenerator
 		""
 	}
 
+	def customTypes(): List[String] = {
+		List()
+	}
+
+
 	def customMappings(): Map[String,String] = {
 		Map(
     		// CUSTOM TYPES
     		"attribute_type" -> "com.escalatorstarter.models.AttributeType"	
 		)
+	}
+
+	def useDefaultValue(tableName: String,columnName: String): Boolean = {
+		// for coluns added after the initial creation we want to default them. auto do this.
+		false
 	}
 
 }

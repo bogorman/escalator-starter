@@ -4,8 +4,8 @@ import java.time.Clock
 import scala.concurrent.{Await, Future}
 import scala.util.Try
 
-import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.ActorMaterializer
 
 import com.typesafe.config.{Config, ConfigFactory}
 
@@ -23,7 +23,7 @@ import com.escalatorstarter.core.repositories.EscalatorStarterRepository
 import com.escalatorstarter.http.server.controllers.AdminController.AdminAuthentication
 import com.escalatorstarter.http.server.EscalatorStarterHttpServer
 
-import escalator.websocket.AkkaHTTP
+import escalator.websocket.PekkoHTTP
 import escalator.util._
 
 import com.escalatorstarter.util._
@@ -39,7 +39,7 @@ object EscalatorStarterApp {
   implicit val scheduler: Scheduler = Scheduler(actorSystem.dispatcher)
 
   implicit val config: Config = ConfigFactory.load()
-  implicit val http: AkkaHTTP = new AkkaHTTP
+  implicit val http: PekkoHTTP = new PekkoHTTP
 
   implicit val timestampProvider: TimestampProvider = new TimestampProvider()(Clock.systemUTC())
 

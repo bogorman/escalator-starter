@@ -1,7 +1,7 @@
 package com.escalatorstarter.http.server.auth
 
-import akka.http.scaladsl.model._
-import akka.http.scaladsl.model.headers._
+import org.apache.pekko.http.scaladsl.model._
+import org.apache.pekko.http.scaladsl.model.headers._
 
 case class SessionCookie(token: String = "") {
   lazy val value = token

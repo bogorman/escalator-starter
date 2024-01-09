@@ -50,7 +50,9 @@ object Common {
     testForkedParallel := false,
     parallelExecution in Test := false,
     // parallelExecution in IntegrationTest := false,
-    resolvers ++= Dependencies.resolvers
+    resolvers ++= Dependencies.resolvers,
+    // resolvers ++= Dependencies.releaseResolvers,
+    // resolvers ++= Dependencies.snapsotResolvers
   )
 
   val jvmSettings = (fork := System.getProperty("sbt.fork.test", "true") == "true") :: baseSettings

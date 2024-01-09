@@ -31,8 +31,8 @@ object Codegen {
     val packageName = "com.escalatorstarter"
     val appName = "EscalatorStarter"
 
-    val packageDomain = packageName.split(".")(0)
-    val packageAppName = packageName.split(".")(1)
+    val packageDomain = packageName.split("\\.")(0)
+    val packageAppName = packageName.split("\\.")(1)
 
     val appFolder = System.getenv().get("PWD")
 

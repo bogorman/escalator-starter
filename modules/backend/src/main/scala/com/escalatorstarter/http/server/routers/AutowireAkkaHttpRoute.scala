@@ -7,7 +7,7 @@ import io.circe.generic.auto._
 import io.circe.parser._
 import io.circe.syntax._
 
-import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
+import com.github.pjfanning.pekkohttpcirce.FailFastCirceSupport._
 // import io.circe.generic.auto._
 
 trait JsonSerializers extends autowire.Serializers[Json, Decoder, Encoder] {
@@ -28,8 +28,8 @@ object AutoWireCirceServer extends autowire.Server[Json, Decoder, Encoder] with 
 
 
 object AutowireAkkaHttpRoute {
-  import akka.http.scaladsl.server.Directives._
-  import akka.http.scaladsl.server._
+  import org.apache.pekko.http.scaladsl.server.Directives._
+  import org.apache.pekko.http.scaladsl.server._
 
   /** @param f Need to expose this to user in order to not break macro
     * @return Akka Http route

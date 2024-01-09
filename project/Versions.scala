@@ -6,11 +6,13 @@
 
     val quillVersion          = "3.12.0"
 
-    val akkaVersion           = "2.6.18"
-    val akkaHttpVersion       = "10.2.8"
-
-    val akkaHttpJson          = "1.39.2"
-    // val akkaHttpJson          = "1.36.0"
+    // val akkaVersion           = "2.6.18"
+    // val akkaHttpVersion       = "10.2.8"
+    // val akkaHttpJson          = "1.39.2"
+    
+    val pekkoVersion            = "1.0.1"
+    val pekkoHttpVersion        = "1.0.0"
+    val pekkoManagementVersion  = "1.0.0"    
 
     val monixVersion          = "3.4.1"
 

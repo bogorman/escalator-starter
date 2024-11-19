@@ -29,6 +29,8 @@ import escalator.util._
 import com.escalatorstarter.util._
 import scala.concurrent.duration._
 
+import pureconfig._
+import pureconfig.generic.auto._ 
 
 object EscalatorStarterApp {
   implicit val monitoring: KamonMonitoring = new KamonMonitoring

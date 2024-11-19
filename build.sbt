@@ -19,3 +19,5 @@ lazy val externals = Projects.externals
 lazy val dbgen = Projects.dbgen
 
 commands ++= Commands.commands
+
+initialize := JavaVersionCheck.javaVersionCheck.value

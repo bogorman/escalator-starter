@@ -74,10 +74,12 @@ object Dependencies {
 
   val flyWay: ModuleID = "org.flywaydb" % "flyway-core" % Versions.flywayVersion
 
-  val cediConfig: ModuleID = "com.ccadllc.cedi" %% "config" % "1.2.0"
+  // val cediConfig: ModuleID = "com.ccadllc.cedi" %% "config" % "1.2.0"
+
+  val pureConfig: ModuleID = "com.github.pureconfig" %% "pureconfig" % "0.17.4"
   val logback: ModuleID = "ch.qos.logback" % "logback-classic" % "1.2.3"
 
-  val catsCore: ModuleID = "org.typelevel" %% "cats-core" % "2.6.0"
+  // val catsCore: ModuleID = "org.typelevel" %% "cats-core" % "2.12.0"
 
   val kamonCore: ModuleID = "io.kamon" %% "kamon-core" % Versions.kamonVersion
   val kamonSystemMetrics: ModuleID = "io.kamon" %% "kamon-system-metrics" % Versions.kamonVersion
@@ -85,34 +87,39 @@ object Dependencies {
   val kamonLogReporter: ModuleID = "io.kamon" %% "kamon-log-reporter" % Versions.kamonVersion
 
   val playJson: ModuleID = "com.typesafe.play" %% "play-json" % Versions.playVersion
-  val twirlApi: ModuleID = "com.typesafe.play" %% "twirl-api" % "1.5.1"
+  val twirlApi: ModuleID = "com.typesafe.play" %% "twirl-api" % "1.6.5" //"1.5.1"
   val lucene4s: ModuleID = "com.outr" %% "lucene4s" % "1.11.1"
 
-  val ammoniteSshd: ModuleID = "com.lihaoyi" % "ammonite-sshd" % "2.4.1" cross CrossVersion.full
+  // "2.4.1"/
+  val ammoniteSshd: ModuleID = "com.lihaoyi" % "ammonite-sshd" % "2.5.11" cross CrossVersion.full
 
   val circeGeneric: ModuleID = "io.circe" %% "circe-generic" % Versions.circeVersion
   val circeParser: ModuleID = "io.circe"  %% "circe-parser" % Versions.circeVersion
-  val circeRefined: ModuleID = "io.circe" %% "circe-refined" % Versions.circeVersion
+  // val circeRefined: ModuleID = "io.circe" %% "circe-refined" % Versions.circeVersion
 
   val enumeratum: ModuleID = "com.beachape" %% "enumeratum" % Versions.enumeratumVersion
 
   val upickle: ModuleID = "com.lihaoyi" %% "upickle" % Versions.upickleVersion
 
   val colorThief: ModuleID = "de.androidpit" % "color-thief" % "1.1.2"
-  val betterFiles: ModuleID = "com.github.pathikrit" %% "better-files"% "3.9.1"
-  val scalaFmt: ModuleID = "org.scalameta" %% "scalafmt-dynamic" % "2.6.1"
-  val scalaMeta: ModuleID = "org.scalameta" %% "scalameta" % "4.3.13"
-  val evoInflector: ModuleID =  "org.atteo" % "evo-inflector" % "1.3"
+  val betterFiles: ModuleID = "com.github.pathikrit" %% "better-files" % "3.9.2" //3.9.1
+  val scalaFmt: ModuleID = "org.scalameta" %% "scalafmt-dynamic" % "3.7.9"  //"2.6.1"
+  val scalaMeta: ModuleID = "org.scalameta" %% "scalameta" % "4.8.4"  //"4.3.13"
+  // val evoInflector: ModuleID =  "org.atteo" % "evo-inflector" % "1.3"
 
   val scribe: ModuleID =  "com.outr" %% "scribe" % Versions.scribe
   val unindent: ModuleID =  "com.davegurnell" %% "unindent" % "1.6.0" 
 
   val scalaJsScripts: ModuleID = "com.vmunier" %% "scalajs-scripts" % "1.2.0"
 
-  val jodd: ModuleID = "org.jodd" % "jodd-mail" % "6.0.5"
+  // val jodd: ModuleID = "org.jodd" % "jodd-mail" % "6.0.5"
+  val jakartaMail = "com.sun.mail" % "jakarta.mail" % "1.6.5"
+  val jakartaMailApi = "jakarta.mail" % "jakarta.mail-api" % "1.6.5"
+
   val caffeine: ModuleID = "com.github.cb372" %% "scalacache-caffeine" % "0.28.0"
 
-  val t3hnar: ModuleID = "com.github.t3hnar" %% "scala-bcrypt" % "4.1"
+  // val t3hnar: ModuleID = "com.github.t3hnar" %% "scala-bcrypt" % "4.1"
+  val bcrypt: ModuleID = "org.mindrot" % "jbcrypt" % "0.4"
 
   val urlDslShared: ModuleID = "be.doeraene" %% "url-dsl" % Versions.urlDsl
 
@@ -138,7 +145,6 @@ object Dependencies {
 
   val jedis: ModuleID = "redis.clients" % "jedis" % "2.9.0"
 
-  val scalaCompiler: ModuleID = "org.scala-lang" % "scala-compiler" % Common.sVersion
   val kolichCommon: ModuleID = "com.kolich" % "kolich-common" % "0.5.0" % "compile" from "https://markkolich.github.io/repo/com/kolich/kolich-common/0.5/kolich-common-0.5.jar"
  
   val commonsCodec: ModuleID = "commons-codec" % "commons-codec" % "1.10"  
@@ -153,7 +159,10 @@ object Dependencies {
 
   val autowire: ModuleID = "com.lihaoyi" %% "autowire" % Versions.autowire
 
-  val scalaParserCombinators = "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2"
+  val scalaCompiler: ModuleID = "org.scala-lang" % "scala-compiler" % Common.sVersion
+
+  // "2.2.0" 
+  // val scalaParserCombinators = "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2"
 
   val commonDependencies = Seq(
     pekkoSlf4j,
@@ -172,25 +181,28 @@ object Dependencies {
     //    
     kamonCore,
     kamonSystemMetrics,
-    catsCore,
-    cediConfig,
+    // catsCore,
+    pureConfig,
     logback,
     playJson,
 
     circeGeneric,
     circeParser,
-    circeRefined,
+    // circeRefined,
 
     enumeratum,
     colorThief,
     betterFiles,
     scalaFmt,
     scalaMeta,
-    evoInflector,
+    // evoInflector,
     //
-    jodd,
+    // jodd,
+    jakartaMail,
+    jakartaMailApi,
     caffeine,
-    t3hnar,
+    // t3hnar,
+    bcrypt,
     jedis,
     // dataDiff
 
@@ -201,7 +213,7 @@ object Dependencies {
     //
     sendgrid,
     commonsLang3,
-    scalaParserCombinators
+    // scalaParserCombinators
   )
 
   val backendDependencies = Seq(
@@ -233,13 +245,13 @@ object Dependencies {
     
     circeGeneric,
     circeParser,
-    circeRefined,
+    // circeRefined,
   
     enumeratum,
     betterFiles,
     scalaFmt,
     scalaMeta,
-    evoInflector,
+    // evoInflector,
 
     scribe,
     unindent,
@@ -249,7 +261,7 @@ object Dependencies {
 
     scalaCompiler,
     //
-    jodd,
+    // jodd,
     caffeine,
 
     kolichCommon,
@@ -262,7 +274,7 @@ object Dependencies {
     autowire,
     // wireo
 
-    scalaParserCombinators
+    // scalaParserCombinators
   )
 
   val sharedDependencies = Seq(

@@ -1,6 +1,6 @@
 package com.escalatorstarter.common.persistence.postgres
 
-import escalator.models.Timestamp
+import escalator.util.Timestamp
 import com.escalatorstarter.models.AttributeType
 
 import io.getquill._

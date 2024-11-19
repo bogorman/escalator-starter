@@ -1,8 +1,8 @@
 
   object Versions {
-    val enumeratumVersion = "1.6.1"
+    val enumeratumVersion = "1.7.0"   //"1.6.1"
 
-    val circeVersion          = "0.14.1"
+    val circeVersion          =  "0.14.9" //"0.14.1"
 
     val quillVersion          = "3.12.0"
 
@@ -18,16 +18,16 @@
 
     // 2.4.2
     // 2.4.8
-    val kamonVersion          = "2.5.12"
+    val kamonVersion          = "2.6.0"
 
-    val flywayVersion         = "8.4.1"
-    val playVersion           = "2.7.4"
+    val flywayVersion         = "9.22.0"
+    val playVersion           = "2.9.0"
 
     val uTest                 = "0.6.6"
 
-    val sttpVersion           = "3.3.18"
+    val sttpVersion           = "3.9.0"
 
-    val scribe               = "3.5.5"
+    val scribe               = "3.11.5"
 
     val laminar             = "0.14.0"
     val airstream           = "0.14.0"

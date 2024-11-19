@@ -18,7 +18,8 @@ object Common {
     "-deprecation",
     "-feature",
     // "-Xmax-classfile-name", "100"
-    "-Ymacro-annotations"
+    "-Ymacro-annotations",
+    // "-target:21"
   )
 
   // val mainScalacOptions = Seq(
@@ -32,7 +33,8 @@ object Common {
     "-Ywarn-unused"
   )
 
-  val sVersion = "2.13.6"
+    //"2.13.6"
+  val sVersion = "2.13.12"
 
   val baseSettings = List(
     organization := "com.escalatorstarter",
@@ -41,8 +43,13 @@ object Common {
 
     // javaOptions ++= Seq("--add-opens", "java.base/java.util=ALL-UNNAMED", "--add-opens", "java.base/java.util.concurrent=ALL-UNNAMED", "--add-opens", "java.base/java.lang=ALL-UNNAMED", "--add-opens", "java.base/java.lang.invoke=ALL-UNNAMED", "--add-opens", "java.base/java.math=ALL-UNNAMED"),
     // javaOptions ++= Seq("--add-opens", "java.base/java.nio=ALL-UNNAMED", "--add-opens", "java.base/sun.nio.ch=ALL-UNNAMED"),
-    javaOptions ++= Seq("--add-opens", "java.base/java.util=ALL-UNNAMED", "--add-opens", "java.base/java.util.concurrent=ALL-UNNAMED", "--add-opens", "java.base/java.lang=ALL-UNNAMED", "--add-opens", "java.base/java.lang.invoke=ALL-UNNAMED", "--add-opens", "java.base/java.math=ALL-UNNAMED"),
-
+    javaOptions ++= Seq(
+      "--add-opens", "java.base/java.util=ALL-UNNAMED", 
+      "--add-opens", "java.base/java.util.concurrent=ALL-UNNAMED", 
+      "--add-opens", "java.base/java.lang=ALL-UNNAMED", 
+      "--add-opens", "java.base/java.lang.invoke=ALL-UNNAMED", 
+      "--add-opens", "java.base/java.math=ALL-UNNAMED"
+    ),
 
     scalaVersion := sVersion,
     // scalaVersion := "2.12.12",

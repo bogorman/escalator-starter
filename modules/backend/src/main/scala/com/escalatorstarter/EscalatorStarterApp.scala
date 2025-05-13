@@ -13,8 +13,8 @@ import com.typesafe.config.{Config, ConfigFactory}
 import monix.execution.Scheduler
 
 import escalator.util.Configuration
-import escalator.util.akka.AkkaActorSystem
-import escalator.util.akka.streams.AkkaStreamsMaterializer
+import escalator.util.pekko.PekkoActorSystem
+import escalator.util.pekko.streams.PekkoStreamsMaterializer
 import escalator.util.logging.Slf4jLogger
 import escalator.util.monitoring.KamonMonitoring
 
@@ -36,8 +36,8 @@ object EscalatorStarterApp {
   implicit val monitoring: KamonMonitoring = new KamonMonitoring
   implicit val logger: Slf4jLogger = new Slf4jLogger("escalatorstarter-logger")
 
-  implicit val actorSystem: ActorSystem = AkkaActorSystem.create("escalatorstarter")
-  implicit val materializer: ActorMaterializer = AkkaStreamsMaterializer()
+  implicit val actorSystem: ActorSystem = PekkoActorSystem.create("escalatorstarter")
+  implicit val materializer: ActorMaterializer = PekkoStreamsMaterializer()
   implicit val scheduler: Scheduler = Scheduler(actorSystem.dispatcher)
 
   implicit val config: Config = ConfigFactory.load()

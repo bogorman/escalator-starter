@@ -50,7 +50,16 @@ object Dependencies {
   val pekkoActor: ModuleID = "org.apache.pekko" %% "pekko-actor" % Versions.pekkoVersion
   val pekkoSlf4j: ModuleID = "org.apache.pekko" %% "pekko-slf4j" % Versions.pekkoVersion
   val pekkoStream: ModuleID = "org.apache.pekko" %% "pekko-stream" % Versions.pekkoVersion
-  val pekkoRemote: ModuleID = "org.apache.pekko" %% "pekko-remote" % Versions.pekkoVersion
+  // val pekkoRemote: ModuleID = "org.apache.pekko" %% "pekko-remote" % Versions.pekkoVersion
+
+  val pekkoCluster: ModuleID = "org.apache.pekko" %% "pekko-cluster"               % Versions.pekkoVersion
+  val pekkoClusterSharding: ModuleID = "org.apache.pekko" %% "pekko-cluster-sharding"      % Versions.pekkoVersion
+
+  val pekkoPersistence: ModuleID = "org.apache.pekko" %% "pekko-persistence"     % Versions.pekkoVersion
+  val pekkoPersistenceQuery: ModuleID = "org.apache.pekko" %% "pekko-persistence-query"     % Versions.pekkoVersion
+
+  // val pekkoPersistencePostgres: ModuleID = "com.swissborg" %% "akka-persistence-postgres" % Versions.peekoPersistencePostgres
+  val pekkoPersistencePostgres: ModuleID = "com.swissborg" %% "pekko-persistence-postgres" % "0.7.0"  
 
   val pekkoHttp: ModuleID = "org.apache.pekko" %% "pekko-http" % Versions.pekkoHttpVersion
   val pekkoSprayJson: ModuleID = "org.apache.pekko" %% "pekko-http-spray-json" % Versions.pekkoHttpVersion
@@ -131,7 +140,7 @@ object Dependencies {
   // val quantego: ModuleID = "com.quantego" % "clp-java" % "1.16.10"
 
   // val circeConfig: ModuleID = "io.circe" %% "circe-config" % "0.8.0"
-  val circeConfig: ModuleID = "com.hunorkovacs" %% "circe-config" % "0.9.0"
+  // val circeConfig: ModuleID = "com.hunorkovacs" %% "circe-config" % "0.9.0"
 
   // val jacksonCore: ModuleID = "com.fasterxml.jackson.core" % "jackson-core" % "2.9.8"
   val jacksonSchema: ModuleID = "com.kjetland" %% "mbknor-jackson-jsonschema" % "1.0.35"
@@ -148,7 +157,7 @@ object Dependencies {
   val kolichCommon: ModuleID = "com.kolich" % "kolich-common" % "0.5.0" % "compile" from "https://markkolich.github.io/repo/com/kolich/kolich-common/0.5/kolich-common-0.5.jar"
  
   val commonsCodec: ModuleID = "commons-codec" % "commons-codec" % "1.10"  
-  val commonsIO: ModuleID = "commons-IO" % "commons-io" % "2.6"  
+  val commonsIO: ModuleID = "commons-io" % "commons-io" % "2.17.0"
 
   val logstash: ModuleID = "net.logstash.logback" % "logstash-logback-encoder" % "6.3"
   
@@ -170,6 +179,13 @@ object Dependencies {
     // akkaHttpCaching,
     pekkoSprayJson,
     pekkoStream,
+    //
+    pekkoCluster,
+    pekkoClusterSharding,
+    //
+    pekkoPersistence,
+    pekkoPersistenceQuery,
+    pekkoPersistencePostgres,
     //
     sttpCore,
     sttpCirce,
@@ -222,6 +238,14 @@ object Dependencies {
     pekkoHttp,
     // akkaHttpCaching,
     pekkoStream,
+    //
+    pekkoCluster,
+    pekkoClusterSharding,
+    //
+    pekkoPersistence,
+    pekkoPersistenceQuery,
+    pekkoPersistencePostgres,
+    //
     // akkaCluster,
     pekkoHttpCirce,
     // akkaHttpUpickle,

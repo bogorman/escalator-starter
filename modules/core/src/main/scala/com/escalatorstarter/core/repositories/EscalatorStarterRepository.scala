@@ -31,4 +31,7 @@ class EscalatorStarterRepository(
   object attributes extends PostgresAttributesTable(this) with PostgresCustomEncoder
   object users extends PostgresUsersTable(this) with PostgresCustomEncoder
   object workQueues extends PostgresWorkQueuesTable(this) with PostgresCustomEncoder
+
+  object candles extends PostgresCandlesTable(this) with PostgresCustomEncoder
+  object events extends PostgresEventsTable(this) with PostgresCustomEncoder  
 }

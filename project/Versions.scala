@@ -18,7 +18,7 @@
 
     // 2.4.2
     // 2.4.8
-    val kamonVersion          = "2.6.0"
+    val kamonVersion          = "2.6.6"
 
     val flywayVersion         = "9.22.0"
     val playVersion           = "2.9.0"

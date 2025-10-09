@@ -1,0 +1,5 @@
+package com.escalatorstarter.common.persistence.postgres
+
+import escalator.util.postgres.PostgresCommonMappedEncoder
+
+object PostgresMappedEncoder extends PostgresCommonMappedEncoder

@@ -1,0 +1,3 @@
+#export PATH=/Library/Java/JavaVirtualMachines/graalvm-jdk-17.0.9+11.1/Contents/Home/bin/:$PATH%
+#sdk use java 21.0.5-graal
+sdk use java 24.0.1-graal

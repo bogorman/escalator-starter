@@ -1,0 +1,65 @@
+package com.escalatorstarter
+
+import java.time.Clock
+import scala.concurrent.{Await, Future}
+import scala.util.Try
+
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.ActorMaterializer
+
+import com.typesafe.config.{Config, ConfigFactory}
+
+// import cats.implicits._
+import monix.execution.Scheduler
+
+import escalator.util.Configuration
+import escalator.util.pekko.PekkoActorSystem
+import escalator.util.pekko.streams.PekkoStreamsMaterializer
+import escalator.util.logging.Slf4jLogger
+import escalator.util.monitoring.KamonMonitoring
+
+import com.escalatorstarter.core.repositories.EscalatorStarterRepository
+
+import com.escalatorstarter.http.server.controllers.AdminController.AdminAuthentication
+import com.escalatorstarter.http.server.EscalatorStarterHttpServer
+
+import escalator.websocket.PekkoHTTP
+import escalator.util._
+
+import com.escalatorstarter.util._
+import scala.concurrent.duration._
+
+import pureconfig._
+import pureconfig.generic.auto._ 
+
+import escalator.util.events._
+
+object EscalatorStarterApp {
+  implicit val monitoring: KamonMonitoring = new KamonMonitoring
+  implicit val logger: Slf4jLogger = new Slf4jLogger("escalatorstarter-logger")
+
+  implicit val actorSystem: ActorSystem = PekkoActorSystem.create("escalatorstarter")
+  implicit val materializer: ActorMaterializer = PekkoStreamsMaterializer()
+  implicit val scheduler: Scheduler = Scheduler(actorSystem.dispatcher)
+
+  implicit val config: Config = ConfigFactory.load()
+  implicit val http: PekkoHTTP = new PekkoHTTP
+
+  implicit val timestampProvider: TimestampProvider = new TimestampProvider()(Clock.systemUTC())
+
+  implicit val eventBus: EventBus = PekkoEventBus(EventBusConfig())
+
+  implicit val repository = new EscalatorStarterRepository(null)
+
+  def main(args: Array[String]): Unit = {
+    println("EscalatorStarter App Started")
+
+    val auth = Configuration.fetch[AdminAuthentication]("escalatorstarter.admin").right.get
+
+    EscalatorStarterHttpServer.start(auth)
+
+    EscalatorStarterReplServer.start()
+
+    ()
+  }
+}

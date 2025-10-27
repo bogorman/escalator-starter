@@ -1,7 +1,7 @@
 package com.escalatorstarter.persistence.database.tables
 
 // THIS FILE IS AUTO-GENERATED. REMOVE THIS LINE TO STOP THIS FILE BEING RE-GENERATED
-// GENERATED AT: 18-09-25 17:13:10:657
+// GENERATED AT: 24-10-25 12:59:31:534
 
 import scala.concurrent.Future
 
@@ -40,6 +40,8 @@ trait CandlesTable {
 
   def getById(c: CandleId): Future[Option[Candle]]
 
+  def getByIds(c: List[CandleId]): Future[List[Candle]]
+
   def update(c: Candle): Future[Candle]
 
   def upsert(c: Candle): Future[Candle]
@@ -48,9 +50,9 @@ trait CandlesTable {
 
   def delete(c: Candle): Future[Candle]
 
-  def getByTokenAddres(tokenAddress: TokenAddress): Future[List[Candle]]
+  def getListByTokenAddres(tokenAddress: TokenAddress): Future[List[Candle]]
 
-  def getByTokenAddress(tokenAddresss: List[TokenAddress]): Future[List[Candle]]
+  def getListByTokenAddress(tokenAddresss: List[TokenAddress]): Future[List[Candle]]
 
   def count: Future[Long]
 

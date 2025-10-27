@@ -24,13 +24,17 @@ import com.escalatorstarter.core.repositories._
 import escalator.util.monix._
 
 object BackendExceptionHandler {
-  
-    implicit final class RecoverFromBackendException[T](task: Task[Either[BackendError, T]]) {
 
-    def recoverFromBackendException: Task[Either[BackendError, T]] = task.onErrorRecover {
-      case e: BackendException => Left[BackendError, T](e.backendError)
-    }
-    
-  }  
+  implicit final class RecoverFromBackendException[T](
+      task: Task[Either[BackendError, T]]
+  ) {
+
+    def recoverFromBackendException: Task[Either[BackendError, T]] =
+      task.onErrorRecover {
+        case e: BackendException =>
+          Left[BackendError, T](e.backendError)
+      }
+
+  }
 
 }

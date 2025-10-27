@@ -1,7 +1,7 @@
 package com.escalatorstarter.persistence.postgres.tables
 
 // THIS FILE IS AUTO-GENERATED. REMOVE THIS LINE TO STOP THIS FILE BEING RE-GENERATED
-// GENERATED AT: 18-09-25 17:13:12:207
+// GENERATED AT: 24-10-25 12:59:33:129
 
 import scala.concurrent.Future
 
@@ -24,7 +24,7 @@ import com.escalatorstarter.persistence.postgres.PostgresCustomEncoder
 import com.escalatorstarter.common.persistence.postgres.PostgresMappedEncoder
 
 import com.escalatorstarter.models._
-import com.escalatorstarter.models.events._
+// import com.escalatorstarter.models.events._
 
 import com.escalatorstarter.persistence.database.tables.WorkQueuesTable
 
@@ -65,7 +65,7 @@ abstract class PostgresWorkQueuesTable(database: PostgresDatabase)(implicit
         }
         .flatMap { result =>
           writeWithTimestamp(result, ts)(Future.successful(()))
-            .publishingCreated((m, cid, time) => WorkQueueCreated(m, id = w.id, cid, time))
+            .publishingCreated((m, cid, time) => events.WorkQueueCreated(m, id = w.id, cid, time))
         }
     }
 
@@ -94,7 +94,7 @@ abstract class PostgresWorkQueuesTable(database: PostgresDatabase)(implicit
               )
               .runToFuture
           }.publishingUpdated((cur, prev, cid, time) =>
-            WorkQueueUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+            events.WorkQueueUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
           )
 
         case None =>
@@ -122,7 +122,7 @@ abstract class PostgresWorkQueuesTable(database: PostgresDatabase)(implicit
               )
               .runToFuture
           }.publishingUpdated((cur, prev, cid, time) =>
-            WorkQueueUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+            events.WorkQueueUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
           )
 
         case None =>
@@ -150,7 +150,7 @@ abstract class PostgresWorkQueuesTable(database: PostgresDatabase)(implicit
               )
               .runToFuture
           }.publishingUpdated((cur, prev, cid, time) =>
-            WorkQueueUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+            events.WorkQueueUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
           )
 
         case None =>
@@ -178,7 +178,7 @@ abstract class PostgresWorkQueuesTable(database: PostgresDatabase)(implicit
               )
               .runToFuture
           }.publishingUpdated((cur, prev, cid, time) =>
-            WorkQueueUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+            events.WorkQueueUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
           )
 
         case None =>
@@ -200,6 +200,18 @@ abstract class PostgresWorkQueuesTable(database: PostgresDatabase)(implicit
       }
     }
 
+  override def getByIds(w: List[WorkQueueId]): Future[List[WorkQueue]] =
+    monitored("getByIds") {
+      read {
+        ctx
+          .run(
+            query[WorkQueue]
+              .filter(obj => liftQuery(w).contains(obj.id))
+          )
+          .runToFuture
+      }
+    }
+
   override def update(w: WorkQueue): Future[WorkQueue] =
     monitored("update") {
       if (w.id == WorkQueueId(0L)) {
@@ -216,7 +228,7 @@ abstract class PostgresWorkQueuesTable(database: PostgresDatabase)(implicit
                 .update(lift(updatedModel))
             )
             .runToFuture
-        }.publishingUpdated((cur, prev, cid, time) => WorkQueueUpdated(cur, prev, id = w.id, cid, time))
+        }.publishingUpdated((cur, prev, cid, time) => events.WorkQueueUpdated(cur, prev, id = w.id, cid, time))
       }
     }
 
@@ -245,10 +257,10 @@ abstract class PostgresWorkQueuesTable(database: PostgresDatabase)(implicit
               .delete
           )
           .runToFuture
-      }.publishingDeleted((m, cid, time) => WorkQueueDeleted(m, id = w.id, cid, time))
+      }.publishingDeleted((m, cid, time) => events.WorkQueueDeleted(m, id = w.id, cid, time))
     }
 
-  override def getByWorkType(workType: WorkType): Future[List[WorkQueue]] =
+  override def getListByWorkType(workType: WorkType): Future[List[WorkQueue]] =
     monitored("get-by-work-type") {
       read {
         ctx
@@ -260,7 +272,7 @@ abstract class PostgresWorkQueuesTable(database: PostgresDatabase)(implicit
       }
     }
 
-  override def getByWorkTypes(workTypes: List[WorkType]): Future[List[WorkQueue]] =
+  override def getListByWorkTypes(workTypes: List[WorkType]): Future[List[WorkQueue]] =
     monitored("get-by-work-types") {
       read {
         ctx
@@ -272,7 +284,7 @@ abstract class PostgresWorkQueuesTable(database: PostgresDatabase)(implicit
       }
     }
 
-  override def getByWorkStatu(workStatus: WorkStatusType): Future[List[WorkQueue]] =
+  override def getListByWorkStatu(workStatus: WorkStatusType): Future[List[WorkQueue]] =
     monitored("get-by-work-status") {
       read {
         ctx
@@ -284,7 +296,7 @@ abstract class PostgresWorkQueuesTable(database: PostgresDatabase)(implicit
       }
     }
 
-  override def getByWorkStatus(workStatuss: List[WorkStatusType]): Future[List[WorkQueue]] =
+  override def getListByWorkStatus(workStatuss: List[WorkStatusType]): Future[List[WorkQueue]] =
     monitored("get-by-work-statuss") {
       read {
         ctx

@@ -16,14 +16,12 @@ import escalator.websocket.Http
 
 import com.escalatorstarter.http.server.controllers.AdminController.AdminAuthentication
 import com.escalatorstarter.core.repositories.EscalatorStarterRepository
+import com.escalatorstarter.http.server.auth.SessionCache
 
 // import com.escalatorstarter.backend.http.server.controllers._
 
 import escalator.util.logging.Logger
 import escalator.util.monitoring.Monitoring
-
-// import com.escalatorstarter.core.exchanges._
-// import com.escalatorstarter.core.sessions._
 
 import escalator.util._
 import com.escalatorstarter.util._
@@ -31,10 +29,15 @@ import com.escalatorstarter.util._
 import com.escalatorstarter.http.server.controllers._
 import com.escalatorstarter.shared.api._
 
+import pureconfig._
+import pureconfig.generic.auto._
+import escalator.util.Configuration
+import com.typesafe.config.Config
 
 object EscalatorStarterHttpServer {
   def start(
-    auth: AdminAuthentication
+    auth: AdminAuthentication,
+    sessionCache: SessionCache
   )(implicit
     repository: EscalatorStarterRepository,
     executionContext: ExecutionContext,
@@ -43,9 +46,9 @@ object EscalatorStarterHttpServer {
     system: ActorSystem,
     materializer: Materializer,
     monitoring: Monitoring,
-    // exchangeCatalogue: ExchangeCatalogue,
-    // sessionHub: SessionHub,
-    timestampProvider: TimestampProvider    
+
+      timestampProvider: TimestampProvider,
+      config: Config
   ): Future[ServerBinding] = {
    val bindingFuture =
       Http()
@@ -53,7 +56,7 @@ object EscalatorStarterHttpServer {
           "0.0.0.0", //take from config
           30099 //take from config
         )
-        .bind(route(auth))
+        .bind(route(auth,sessionCache))
 
     bindingFuture.failed.foreach { ex =>
       // logger.error(s"bind failed: ", ex)
@@ -66,7 +69,8 @@ object EscalatorStarterHttpServer {
   }
 
   def route(
-    auth: AdminAuthentication
+    auth: AdminAuthentication,
+    sessionCache: SessionCache
   )(implicit
     repository: EscalatorStarterRepository,
     executionContext: ExecutionContext,
@@ -74,12 +78,12 @@ object EscalatorStarterHttpServer {
     logger: Logger,
     materializer: Materializer,
     monitoring: Monitoring,
-    // exchangeCatalogue: ExchangeCatalogue,
-    // sessionHub: SessionHub,
-    timestampProvider: TimestampProvider       
+
+      timestampProvider: TimestampProvider,
+      config: Config
   ): Route = {
 
-      val routes = new EscalatorStarterRoutes()
+      val routes = new EscalatorStarterRoutes(sessionCache)
       routes.route
 
   }

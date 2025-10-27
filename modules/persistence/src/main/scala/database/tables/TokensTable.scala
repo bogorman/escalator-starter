@@ -1,7 +1,7 @@
 package com.escalatorstarter.persistence.database.tables
 
 // THIS FILE IS AUTO-GENERATED. REMOVE THIS LINE TO STOP THIS FILE BEING RE-GENERATED
-// GENERATED AT: 18-09-25 17:13:11:592
+// GENERATED AT: 24-10-25 12:59:32:427
 
 import scala.concurrent.Future
 
@@ -61,6 +61,8 @@ trait TokensTable {
   def updateTagByAddres(address: TokenAddress, tags: Option[List[String]]): Future[_]
 
   def getById(t: TokenId): Future[Option[Token]]
+
+  def getByIds(t: List[TokenId]): Future[List[Token]]
 
   def update(t: Token): Future[Token]
 

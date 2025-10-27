@@ -29,19 +29,23 @@ object SessionCookie {
   }
 
   def getSessionCookieHeader(
-    content: String           = "",
-    expires: Option[DateTime] = None,
-    maxAge:  Option[Long]     = None): `Set-Cookie` = {
-    `Set-Cookie`(HttpCookie(
-      name = sessionCookieName,
-      value = content,
-      expires = expires,
-      maxAge = maxAge,
-      // Set "secure = true" if you want the "Secure" flag set on
-      // outgoing cookies, meaning the cookie will only be accepted
-      // over HTTPS (secure) connections.
-      secure = false,
-      httpOnly = true))
+      content: String = "",
+      expires: Option[DateTime] = None,
+      maxAge: Option[Long] = None
+  ): `Set-Cookie` = {
+    `Set-Cookie`(
+      HttpCookie(
+        name = sessionCookieName,
+        value = content,
+        expires = expires,
+        maxAge = maxAge,
+        // Set "secure = true" if you want the "Secure" flag set on
+        // outgoing cookies, meaning the cookie will only be accepted
+        // over HTTPS (secure) connections.
+        secure = false,
+        httpOnly = true
+      )
+    )
   }
 
   def getUnsetSessionCookieHeader = {

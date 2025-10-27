@@ -1,7 +1,7 @@
 package com.escalatorstarter.persistence.postgres.tables
 
 // THIS FILE IS AUTO-GENERATED. REMOVE THIS LINE TO STOP THIS FILE BEING RE-GENERATED
-// GENERATED AT: 18-09-25 17:13:10:662
+// GENERATED AT: 24-10-25 12:59:31:537
 
 import scala.concurrent.Future
 
@@ -24,7 +24,7 @@ import com.escalatorstarter.persistence.postgres.PostgresCustomEncoder
 import com.escalatorstarter.common.persistence.postgres.PostgresMappedEncoder
 
 import com.escalatorstarter.models._
-import com.escalatorstarter.models.events._
+// import com.escalatorstarter.models.events._
 
 import com.escalatorstarter.persistence.database.tables.CandlesTable
 
@@ -65,7 +65,7 @@ abstract class PostgresCandlesTable(database: PostgresDatabase)(implicit
         }
         .flatMap { result =>
           writeWithTimestamp(result, ts)(Future.successful(()))
-            .publishingCreated((m, cid, time) => CandleCreated(m, id = c.id, cid, time))
+            .publishingCreated((m, cid, time) => events.CandleCreated(m, id = c.id, cid, time))
         }
     }
 
@@ -93,7 +93,9 @@ abstract class PostgresCandlesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => CandleUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.CandleUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Candle found with id $id"))
@@ -119,7 +121,9 @@ abstract class PostgresCandlesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => CandleUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.CandleUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Candle found with id $id"))
@@ -145,7 +149,9 @@ abstract class PostgresCandlesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => CandleUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.CandleUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Candle found with id $id"))
@@ -171,7 +177,9 @@ abstract class PostgresCandlesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => CandleUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.CandleUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Candle found with id $id"))
@@ -197,7 +205,9 @@ abstract class PostgresCandlesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => CandleUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.CandleUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Candle found with id $id"))
@@ -223,7 +233,9 @@ abstract class PostgresCandlesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => CandleUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.CandleUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Candle found with id $id"))
@@ -249,7 +261,9 @@ abstract class PostgresCandlesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => CandleUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.CandleUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Candle found with id $id"))
@@ -275,7 +289,9 @@ abstract class PostgresCandlesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => CandleUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.CandleUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Candle found with id $id"))
@@ -301,7 +317,9 @@ abstract class PostgresCandlesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => CandleUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.CandleUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Candle found with id $id"))
@@ -327,7 +345,9 @@ abstract class PostgresCandlesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => CandleUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.CandleUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Candle found with id $id"))
@@ -353,7 +373,9 @@ abstract class PostgresCandlesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => CandleUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.CandleUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Candle found with id $id"))
@@ -374,6 +396,18 @@ abstract class PostgresCandlesTable(database: PostgresDatabase)(implicit
       }
     }
 
+  override def getByIds(c: List[CandleId]): Future[List[Candle]] =
+    monitored("getByIds") {
+      read {
+        ctx
+          .run(
+            query[Candle]
+              .filter(obj => liftQuery(c).contains(obj.id))
+          )
+          .runToFuture
+      }
+    }
+
   override def update(c: Candle): Future[Candle] =
     monitored("update") {
       if (c.id == CandleId(0L)) {
@@ -390,7 +424,7 @@ abstract class PostgresCandlesTable(database: PostgresDatabase)(implicit
                 .update(lift(updatedModel))
             )
             .runToFuture
-        }.publishingUpdated((cur, prev, cid, time) => CandleUpdated(cur, prev, id = c.id, cid, time))
+        }.publishingUpdated((cur, prev, cid, time) => events.CandleUpdated(cur, prev, id = c.id, cid, time))
       }
     }
 
@@ -419,10 +453,10 @@ abstract class PostgresCandlesTable(database: PostgresDatabase)(implicit
               .delete
           )
           .runToFuture
-      }.publishingDeleted((m, cid, time) => CandleDeleted(m, id = c.id, cid, time))
+      }.publishingDeleted((m, cid, time) => events.CandleDeleted(m, id = c.id, cid, time))
     }
 
-  override def getByTokenAddres(tokenAddress: TokenAddress): Future[List[Candle]] =
+  override def getListByTokenAddres(tokenAddress: TokenAddress): Future[List[Candle]] =
     monitored("get-by-token-address") {
       read {
         ctx
@@ -434,7 +468,7 @@ abstract class PostgresCandlesTable(database: PostgresDatabase)(implicit
       }
     }
 
-  override def getByTokenAddress(tokenAddresss: List[TokenAddress]): Future[List[Candle]] =
+  override def getListByTokenAddress(tokenAddresss: List[TokenAddress]): Future[List[Candle]] =
     monitored("get-by-token-addresss") {
       read {
         ctx

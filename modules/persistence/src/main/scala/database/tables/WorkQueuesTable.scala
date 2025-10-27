@@ -1,7 +1,7 @@
 package com.escalatorstarter.persistence.database.tables
 
 // THIS FILE IS AUTO-GENERATED. REMOVE THIS LINE TO STOP THIS FILE BEING RE-GENERATED
-// GENERATED AT: 18-09-25 17:13:12:206
+// GENERATED AT: 24-10-25 12:59:33:129
 
 import scala.concurrent.Future
 
@@ -26,6 +26,8 @@ trait WorkQueuesTable {
 
   def getById(w: WorkQueueId): Future[Option[WorkQueue]]
 
+  def getByIds(w: List[WorkQueueId]): Future[List[WorkQueue]]
+
   def update(w: WorkQueue): Future[WorkQueue]
 
   def upsert(w: WorkQueue): Future[WorkQueue]
@@ -34,12 +36,12 @@ trait WorkQueuesTable {
 
   def delete(w: WorkQueue): Future[WorkQueue]
 
-  def getByWorkType(workType: WorkType): Future[List[WorkQueue]]
+  def getListByWorkType(workType: WorkType): Future[List[WorkQueue]]
 
-  def getByWorkTypes(workTypes: List[WorkType]): Future[List[WorkQueue]]
-  def getByWorkStatu(workStatus: WorkStatusType): Future[List[WorkQueue]]
+  def getListByWorkTypes(workTypes: List[WorkType]): Future[List[WorkQueue]]
+  def getListByWorkStatu(workStatus: WorkStatusType): Future[List[WorkQueue]]
 
-  def getByWorkStatus(workStatuss: List[WorkStatusType]): Future[List[WorkQueue]]
+  def getListByWorkStatus(workStatuss: List[WorkStatusType]): Future[List[WorkQueue]]
 
   def count: Future[Long]
 

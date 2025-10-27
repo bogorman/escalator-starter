@@ -1,7 +1,7 @@
 package com.escalatorstarter.persistence.postgres.tables
 
 // THIS FILE IS AUTO-GENERATED. REMOVE THIS LINE TO STOP THIS FILE BEING RE-GENERATED
-// GENERATED AT: 18-09-25 17:13:10:892
+// GENERATED AT: 24-10-25 12:59:31:752
 
 import scala.concurrent.Future
 
@@ -24,7 +24,7 @@ import com.escalatorstarter.persistence.postgres.PostgresCustomEncoder
 import com.escalatorstarter.common.persistence.postgres.PostgresMappedEncoder
 
 import com.escalatorstarter.models._
-import com.escalatorstarter.models.events._
+// import com.escalatorstarter.models.events._
 
 import com.escalatorstarter.persistence.database.tables.CommentsTable
 
@@ -65,7 +65,7 @@ abstract class PostgresCommentsTable(database: PostgresDatabase)(implicit
         }
         .flatMap { result =>
           writeWithTimestamp(result, ts)(Future.successful(()))
-            .publishingCreated((m, cid, time) => CommentCreated(m, id = c.id, cid, time))
+            .publishingCreated((m, cid, time) => events.CommentCreated(m, id = c.id, cid, time))
         }
     }
 
@@ -93,7 +93,9 @@ abstract class PostgresCommentsTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => CommentUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.CommentUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Comment found with id $id"))
@@ -119,7 +121,9 @@ abstract class PostgresCommentsTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => CommentUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.CommentUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Comment found with id $id"))
@@ -145,7 +149,9 @@ abstract class PostgresCommentsTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => CommentUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.CommentUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Comment found with id $id"))
@@ -166,6 +172,18 @@ abstract class PostgresCommentsTable(database: PostgresDatabase)(implicit
       }
     }
 
+  override def getByIds(c: List[CommentId]): Future[List[Comment]] =
+    monitored("getByIds") {
+      read {
+        ctx
+          .run(
+            query[Comment]
+              .filter(obj => liftQuery(c).contains(obj.id))
+          )
+          .runToFuture
+      }
+    }
+
   override def update(c: Comment): Future[Comment] =
     monitored("update") {
       if (c.id == CommentId(0L)) {
@@ -182,7 +200,7 @@ abstract class PostgresCommentsTable(database: PostgresDatabase)(implicit
                 .update(lift(updatedModel))
             )
             .runToFuture
-        }.publishingUpdated((cur, prev, cid, time) => CommentUpdated(cur, prev, id = c.id, cid, time))
+        }.publishingUpdated((cur, prev, cid, time) => events.CommentUpdated(cur, prev, id = c.id, cid, time))
       }
     }
 
@@ -211,10 +229,10 @@ abstract class PostgresCommentsTable(database: PostgresDatabase)(implicit
               .delete
           )
           .runToFuture
-      }.publishingDeleted((m, cid, time) => CommentDeleted(m, id = c.id, cid, time))
+      }.publishingDeleted((m, cid, time) => events.CommentDeleted(m, id = c.id, cid, time))
     }
 
-  override def getByPostId(postId: PostId): Future[List[Comment]] =
+  override def getListByPostId(postId: PostId): Future[List[Comment]] =
     monitored("get-by-post-id") {
       read {
         ctx
@@ -226,7 +244,7 @@ abstract class PostgresCommentsTable(database: PostgresDatabase)(implicit
       }
     }
 
-  override def getByPostIds(postIds: List[PostId]): Future[List[Comment]] =
+  override def getListByPostIds(postIds: List[PostId]): Future[List[Comment]] =
     monitored("get-by-post-ids") {
       read {
         ctx

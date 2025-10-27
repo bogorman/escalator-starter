@@ -21,20 +21,22 @@ const devBackend = `http://127.0.0.1:${devBackendPort}`;
 
 const devServer = {
   hot: true,
-  firewall: false,
-  client: {
-    host: devServerHost,
-    port: devServerPort,
-  },
-  injectHot: true,
-  injectClient: true,
-  transportMode: 'ws',
-  public: `http://localhost:${devServerPort}`,
   port: devServerPort,
   host: devServerHost,
-
+  client: {
+    webSocketURL: {
+      hostname: devServerHost,
+      port: devServerPort,
+      protocol: 'ws'
+    },
+    overlay: {
+      errors: true,
+      warnings: false
+    }
+  },
+  webSocketServer: 'ws',
   historyApiFallback: {
-    index: ''
+    index: '/'
   },
   proxy: {
     '/api': {
@@ -46,7 +48,7 @@ const devServer = {
       target: devBackend,
       changeOrigin: true,
       ws: true
-    }    
+    }
   },
 };
 
@@ -56,7 +58,15 @@ const common = (mode) => ({
     alias: {
       'frontend-config': (mode === 'production') ?
         path.resolve(__dirname, './modules/frontend-config/prod') :
-        path.resolve(__dirname, './modules/frontend-config/dev')
+        path.resolve(__dirname, './modules/frontend-config/dev'),
+      'lightweight-charts': path.resolve(__dirname,
+        mode === 'production'
+          ? './node_modules/lightweight-charts/dist/lightweight-charts.production.mjs'
+          : './node_modules/lightweight-charts/dist/lightweight-charts.development.mjs'
+      )
+    },
+    extensionAlias: {
+      '.js': ['.js', '.mjs']
     }
   },
   output: {
@@ -66,7 +76,6 @@ const common = (mode) => ({
     libraryTarget: 'var'
   },
   entry: [
-    path.resolve(__dirname, './modules/frontend/src/main/static/stylesheets/main.scss'),
     path.resolve(__dirname, './modules/frontend/src/main/static/stylesheets/main.css')
   ],
   module: {
@@ -88,7 +97,7 @@ const common = (mode) => ({
   plugins: [
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: './modules/frontend/src/main/static/html/index.html.ejs',
+      template: './modules/frontend/src/main/static/html/index.html',
       minify: false,
       inject: 'head',
     }),

@@ -17,7 +17,7 @@ import java.time.Instant
 
 // import org.apache.pekko.http.scaladsl.model.StatusCodes.{BadRequest, InternalServerError, OK, Unauthorized}
 
-import models.users._
+import com.escalatorstarter.users._
 import com.escalatorstarter.models._
 
 import io.circe.generic.auto._
@@ -41,23 +41,38 @@ import cats.implicits._
 
 import com.escalatorstarter.http.server.controllers._
 import com.escalatorstarter.http.server.auth._
+import com.escalatorstarter.http.server.privatizers._
 
 import com.escalatorstarter.shared.api._
 import com.escalatorstarter.http.akka._
 
 import escalator.common.util.debug.StackTrace
 
+import pureconfig._
+import pureconfig.generic.auto._
+import escalator.util.Configuration
+import com.typesafe.config.Config
+
 // import concurrent.Future
 // import scala.util.Success
 // import scala.util.Failure
 
 
-class EscalatorStarterRoutes()(implicit repository: EscalatorStarterRepository) extends RoutesBase with CorsHandler with SecureHandler {
+class EscalatorStarterRoutes(override protected val sessionCache: SessionCache)(implicit repository: EscalatorStarterRepository, val config: Config)
+	extends RoutesBase 
+	with CorsHandler 
+	with SecureHandler {
   
   import monix.execution.Scheduler.Implicits.global
   import escalator.util.monix.TaskSyntax._
 
   import EscalatorStarterBackendError._
+
+  // Implement SecureService trait requirement
+  protected def getSessionDataByAccessToken(accessToken: String): Option[SessionData] = {
+    // This is a basic implementation - you may need to customize this based on your auth strategy
+    sessionCache.getSession(accessToken)
+  }
 
   def route: Route = {
     // corsHandler( allRoutes )
@@ -65,7 +80,9 @@ class EscalatorStarterRoutes()(implicit repository: EscalatorStarterRepository) 
   }
 
   def allRoutes: Route = {
-    (handleRejections(apiRejectionHandler) & handleExceptions(apiExceptionHandler)) {
+    (handleRejections(apiRejectionHandler) & handleExceptions(
+      apiExceptionHandler
+    )) {
       apiPublicRoutes ~
       rpcPublicRoutes ~
       userPublicRoutes ~
@@ -96,17 +113,32 @@ class EscalatorStarterRoutes()(implicit repository: EscalatorStarterRepository) 
               println("encryptedPass:" + encrypedPass)
               // PasswordUtil.encrypt(newUser.password,pepper)
 
-              // PasswordUtils.matches(password, PEPPER, users(0).getEncryptedPassword)
+            // PasswordUtils.matches(password, PEPPER, users(0).getEncryptedPassword)
 
-              val t: Task[Either[BackendError,User]] = for {
-                userOpt <- Task.fromFuture(repository.users.getByEmail(UserEmail(loginUser.email.toLowerCase)))
-                r <- if (userOpt.isEmpty) {
-                  Task.pure(EmailNotFound(loginUser.email.toLowerCase).asLeft[User])
-                // } else if (userOpt.get.encryptedPassword != encrypedPass) {
-                } else if (PasswordUtil.matches(loginUser.password, PEPPER, userOpt.get.encryptedPassword)) {
+            val t: Task[Either[BackendError, User]] = for {
+              userOpt <- Task.fromFuture(
+                repository.users.getByEmail(
+                  UserEmail(loginUser.email.toLowerCase)
+                )
+              )
+              r <-
+                if (userOpt.isEmpty) {
+                  Task.pure(
+                    EmailNotFound(loginUser.email.toLowerCase).asLeft[User]
+                  )
+                  // } else if (userOpt.get.encryptedPassword != encrypedPass) {
+                } else if (
+                  PasswordUtil.matches(
+                    loginUser.password,
+                    PEPPER,
+                    userOpt.get.encryptedPassword
+                  )
+                ) {
                   Task.pure(userOpt.get.asRight[BackendError])
                 } else {
-                  Task.pure(PasswordIncorrect(loginUser.email.toLowerCase).asLeft[User])                  
+                  Task.pure(
+                    PasswordIncorrect(loginUser.email.toLowerCase).asLeft[User]
+                  )
                 }
               } yield (r)
 
@@ -120,20 +152,28 @@ class EscalatorStarterRoutes()(implicit repository: EscalatorStarterRepository) 
 
                     // val sessionCache = WebAppSessionCache
 
-                    val session = SessionData(sessionCache.getRandomSessionId, u.username.username, u.role)
+                  val session = SessionData(
+                    sessionCache.getRandomSessionId,
+                    u.email.email,
+                    Some(u.role.ident)
+                  )
 
                     sessionCache.setSession(session.id, session)
 
                     import SessionCookie._
 
-                    respondWithHeader(getSessionCookieHeader(content = session.id)) {
-                      // _.complete(redirectToRoute("/index"))
-                      _.complete(StatusCodes.OK -> u)
-                    }
+                  respondWithHeader(
+                    getSessionCookieHeader(content = session.id)
+                  ) {
+                    // _.complete(redirectToRoute("/index"))
+                    _.complete(StatusCodes.OK -> UserPrivatizer.sanitize(u))
                   }
+                }
                   case Left(error) => {
                     println("RETURNING BAD REQUEST")
-                    complete(StatusCodes.BadRequest -> Map(error.errorKey -> List(error)))    
+                  complete(
+                    StatusCodes.BadRequest -> Map(error.errorKey -> List(error))
+                  )
                   }
                 }
               }      
@@ -147,15 +187,10 @@ class EscalatorStarterRoutes()(implicit repository: EscalatorStarterRepository) 
               val dbUser = newUserToUser(newUser)
 
               val t: Task[Either[BackendError,User]] = for {
-                usernameExists <- Task.fromFuture(repository.users.existsOnUsername(dbUser))
                 emailExists <- Task.fromFuture(repository.users.existsOnEmail(dbUser))
-                invalidForInsert <- Task.pure(usernameExists || emailExists)
+                invalidForInsert <- Task.pure(emailExists)
                 result <- if (invalidForInsert){
-                  if (usernameExists){
-                    Task.pure(UserNameAlreadyExists(dbUser.fullName).asLeft[User])
-                  } else {
-                    Task.pure(EmailAlreadyExists(dbUser.email.email).asLeft[User])
-                  }
+                  Task.pure(EmailAlreadyExists(dbUser.email.email).asLeft[User])
                 } else {
                   UserController.storeUser(dbUser)
                 }
@@ -204,12 +239,13 @@ class EscalatorStarterRoutes()(implicit repository: EscalatorStarterRepository) 
             authenticate() { session =>
               get {
                 // complete(StatusCodes.OK -> Instant.now.toString)
-                onSuccess(repository.users.getByUsername(Username(session.username))) { userOpt =>
-                  userOpt match {
-                    case Some(user) => {
-                      val appUser = AppUser(""+user.id,user.fullName)
-                      complete(StatusCodes.OK -> appUser)
-                    }
+            onSuccess(
+              repository.users.getByEmail(UserEmail(session.email))
+            ) { userOpt =>
+              userOpt match {
+                case Some(user) => {
+                  complete(StatusCodes.OK -> UserPrivatizer.sanitize(user))
+                }
                     case None => {
                       complete(StatusCodes.BadRequest -> Error("not Authorization"))
                     }
@@ -263,7 +299,9 @@ class EscalatorStarterRoutes()(implicit repository: EscalatorStarterRepository) 
         case AuthorizationFailedRejection =>
           extractUri { uri =>
             scribe.error(s"${uri.path} | unauthorized API call")
-            complete(StatusCodes.Unauthorized -> Error("Authorization Required"))
+            complete(
+              StatusCodes.Unauthorized -> Error("Authorization Required")
+            )
           }
         case MalformedRequestContentRejection(reason, error) =>
           extractUri { uri =>
@@ -298,8 +336,10 @@ class EscalatorStarterRoutes()(implicit repository: EscalatorStarterRepository) 
     }
   }
 
-  //TODO: take this from config.
-  val PEPPER = "8f492a1986b28d42a42da845757a3a84ddf6f22c1900093fa0323dd9eccc26fe64bf891635eab04c4e698611f91a09e8ac9ac4c5b3fd9c97f9f47ee88e860f34"
+  // Load PEPPER from config
+  val PEPPER: String = Configuration.fetch[SecureProtocol.AuthConfig]("escalatorstarter.auth")
+    .map(_.pepper)
+    .getOrElse("<SET IN CONIG PROPERLY>")
 
   def newUserToUser(newUser: NewUser): User = {
     val encryptedPass = PasswordUtil.encrypt(newUser.password,PEPPER)
@@ -307,27 +347,27 @@ class EscalatorStarterRoutes()(implicit repository: EscalatorStarterRepository) 
     println("encryptedPass:" + encryptedPass)
 
     User(
-      Username(newUser.name.toLowerCase),
       UserEmail(newUser.email.toLowerCase),
-      encryptedPass,//: String,
+      encryptedPass,//encryptedPassword: String,
       None,//resetPasswordToken: Option[UserResetPasswordToken],
       None,//rememberToken: Option[String],
       None,//rememberCreatedAt: Option[escalator.util.Timestamp],
-      0,//signInCount: Int,
+      None,//confirmationToken: Option[UserConfirmationToken],
+      None,//confirmedAt: Option[escalator.util.Timestamp],
+      None,//confirmationSentAt: Option[escalator.util.Timestamp],
+      None,//passwordSalt: Option[String],
+      Some(newUser.name),  //fullName: Option[String],
+      Some(TextUtil.extractInitials(newUser.name.toLowerCase)),//initials: Option[String],
+      None,//twoFactorAuthActive: Option[Boolean],
+      None,//twoFactorAuthSecret: Option[String],
+      Some(0),//signInCount: Option[Int],
       None,//currentSignInAt: Option[escalator.util.Timestamp],
       None,//lastSignInAt: Option[escalator.util.Timestamp],
       None,//currentSignInIp: Option[String],
       None,//lastSignInIp: Option[String],
-      None,//confirmationToken: Option[UserConfirmationToken],
-      None,//confirmationAt: Option[escalator.util.Timestamp],
-      None,//confirmationSentAt: Option[escalator.util.Timestamp],
-      None,//passwordSalt: Option[String],
-      newUser.name,  //name: Option[String],
-      TextUtil.extractInitials(newUser.name.toLowerCase),//initials: Option[String],
-      None,//twoFactorAuthActive: Option[Boolean],
-      None,//twoFactorAuthSecret: Option[String],
-      None,//role: Option[String],
-      "ACTIVE"//status: String
+      UserRoleType("USER"),//role: UserRoleType,
+      UserStatusType("ACTIVE"),//status: UserStatusType
+      UserAccessToken(java.util.UUID.randomUUID())//accessToken: UserAccessToken
     )
   }
 

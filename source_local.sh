@@ -4,3 +4,4 @@ export DB_PORT=54320
 export DB_USER="postgres"
 export DB_PASSWORD="<CHANGE THIS>"
 export DB_NAME="escalatorstarter"
+export SESSION_CACHE_TYPE="hybrid"

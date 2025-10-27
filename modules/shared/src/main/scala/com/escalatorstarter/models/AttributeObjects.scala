@@ -1,38 +1,56 @@
 package com.escalatorstarter.models
 
 // THIS FILE IS AUTO-GENERATED. REMOVE THIS LINE TO STOP THIS FILE BEING RE-GENERATED
-// GENERATED AT: 18-09-25 17:13:09:993
+// GENERATED AT: 24-10-25 12:59:30:916
 
 // Type-safe constants for AttributeType values
 
 object EntityTypes {
-  val Person = EntityType("person")
-  val Company = EntityType("company")
-  val NonProfit = EntityType("non_profit")
-  val Fund = EntityType("fund")
-  val Cause = EntityType("cause")
-  val Country = EntityType("country")
-  val GovernmentBranch = EntityType("government_branch")
-  val PoliticalParty = EntityType("political_party")
-  val IntergovOrg = EntityType("intergov_org")
-  val Internal = EntityType("internal")
-  val University = EntityType("university")
-  val Page = EntityType("page")
-  val Group = EntityType("group")
-  val City = EntityType("city")
-  val State = EntityType("state")
-  val Territory = EntityType("territory")
-  val Investor = EntityType("investor")
-  val Media = EntityType("media")
+  val person = EntityType("person")
+  val company = EntityType("company")
+  val non_profit = EntityType("non_profit")
+  val fund = EntityType("fund")
+  val cause = EntityType("cause")
+  val country = EntityType("country")
+  val government_branch = EntityType("government_branch")
+  val political_party = EntityType("political_party")
+  val intergov_org = EntityType("intergov_org")
+  val internal = EntityType("internal")
+  val university = EntityType("university")
+  val page = EntityType("page")
+  val group = EntityType("group")
+  val city = EntityType("city")
+  val state = EntityType("state")
+  val territory = EntityType("territory")
+  val investor = EntityType("investor")
+  val media = EntityType("media")
+}
+
+object UserRoleTypes {
+  val ADMIN = UserRoleType("ADMIN")
+  val USER = UserRoleType("USER")
+  val TRADER = UserRoleType("TRADER")
+  val VIEWER = UserRoleType("VIEWER")
+}
+
+object UserStatusTypes {
+  val ACTIVE = UserStatusType("ACTIVE")
+  val SUSPENDED = UserStatusType("SUSPENDED")
+  val DELETED = UserStatusType("DELETED")
+  val PENDING = UserStatusType("PENDING")
+}
+
+object UserSessionTypes {
+  val UI = UserSessionType("UI")
 }
 
 object WorkTypes {
-  val Email = WorkType("email")
+  val email = WorkType("email")
 }
 
 object WorkStatusTypes {
-  val Failed = WorkStatusType("failed")
-  val Complete = WorkStatusType("complete")
-  val Working = WorkStatusType("working")
-  val Pending = WorkStatusType("pending")
+  val failed = WorkStatusType("failed")
+  val complete = WorkStatusType("complete")
+  val working = WorkStatusType("working")
+  val pending = WorkStatusType("pending")
 }

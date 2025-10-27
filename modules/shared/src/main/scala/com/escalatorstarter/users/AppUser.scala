@@ -1,3 +1,3 @@
-package models.users
+package com.escalatorstarter.users
 
-final case class AppUser(id: String, name: String)
+final case class AppUser(id: String, email: String, name: Option[String])

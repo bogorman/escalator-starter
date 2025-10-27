@@ -34,6 +34,8 @@ import pureconfig.generic.auto._
 
 import escalator.util.events._
 
+
+import com.escalatorstarter.http.server.auth.{ SessionCache, SessionCacheFactory}
 object EscalatorStarterApp {
   implicit val monitoring: KamonMonitoring = new KamonMonitoring
   implicit val logger: Slf4jLogger = new Slf4jLogger("escalatorstarter-logger")
@@ -45,18 +47,22 @@ object EscalatorStarterApp {
   implicit val config: Config = ConfigFactory.load()
   implicit val http: PekkoHTTP = new PekkoHTTP
 
-  implicit val timestampProvider: TimestampProvider = new TimestampProvider()(Clock.systemUTC())
+  implicit val eventBus: EventBus = PekkoEventBus(EventBusConfig(logEvents = true))
 
-  implicit val eventBus: EventBus = PekkoEventBus(EventBusConfig())
+  implicit val timestampProvider: TimestampProvider = new TimestampProvider()(
+    Clock.systemUTC()
+  )
 
   implicit val repository = new EscalatorStarterRepository(null)
+
+  val sessionCache: SessionCache = SessionCacheFactory.create(config, repository)
 
   def main(args: Array[String]): Unit = {
     println("EscalatorStarter App Started")
 
     val auth = Configuration.fetch[AdminAuthentication]("escalatorstarter.admin").right.get
 
-    EscalatorStarterHttpServer.start(auth)
+    EscalatorStarterHttpServer.start(auth, sessionCache)
 
     EscalatorStarterReplServer.start()
 

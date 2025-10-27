@@ -1,7 +1,7 @@
 package com.escalatorstarter.models
 
 // THIS FILE IS AUTO-GENERATED. REMOVE THIS LINE TO STOP THIS FILE BEING RE-GENERATED
-// GENERATED AT: 18-09-25 17:13:10:248
+// GENERATED AT: 24-10-25 12:59:31:137
 
 case class CandleId(id: Long) extends AnyVal
 

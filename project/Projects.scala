@@ -190,7 +190,7 @@ object Projects {
 
   ////////
 
-  lazy val escalatorFrontend: Project = project.in(file("modules/escalator/modules/escalator-frontend"))
+  lazy val escalatorFrontendShared: Project = project.in(file("modules/escalator/modules/escalator-frontend-shared"))
     .enablePlugins(ScalaJSPlugin)
     .dependsOn(escalatorSharedCommonJS)
     .settings(Common.jsSettings: _*)
@@ -208,13 +208,39 @@ object Projects {
         FrontendDependencies.circeJs.value,
         FrontendDependencies.urlDsl.value,
         FrontendDependencies.sttpClientJsVersion.value,
-        FrontendDependencies.akkaJsVersion.value       
+        // FrontendDependencies.akkaJsVersion.value       
       ),
-      scalaJSUseMainModuleInitializer := true,
+      // scalaJSUseMainModuleInitializer := true,
     )
     .enablePlugins(ScalaJSPlugin, ScalaJSWeb)
     .disablePlugins(RevolverPlugin)
 
+  lazy val escalatorFrontend: Project = project.in(file("modules/escalator/modules/escalator-frontend"))
+    .enablePlugins(ScalaJSPlugin)
+    .dependsOn(escalatorFrontendShared,escalatorSharedCommonJS)
+    .settings(Common.jsSettings: _*)
+    .settings(
+      scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
+
+      Common.compilerPlugins.map(addCompilerPlugin),  
+
+      libraryDependencies ++= Seq.concat(
+        FrontendDependencies.scalaJsDom.value,
+        FrontendDependencies.laminar.value,
+        FrontendDependencies.airstream.value,
+        FrontendDependencies.laminext.value,
+        FrontendDependencies.waypoint.value,
+        FrontendDependencies.circeJs.value,
+        FrontendDependencies.urlDsl.value,
+        FrontendDependencies.sttpClientJsVersion.value,
+        FrontendDependencies.lightweightCharts.value // For chart components
+        // FrontendDependencies.akkaJsVersion.value       
+
+      ),
+      // scalaJSUseMainModuleInitializer := true,
+    )
+    .enablePlugins(ScalaJSPlugin, ScalaJSWeb)
+    .disablePlugins(RevolverPlugin)    
 
   lazy val frontend: Project = project.in(file("modules/frontend"))
     .enablePlugins(ScalaJSPlugin)
@@ -239,7 +265,7 @@ object Projects {
         FrontendDependencies.scalaCss.value,
         //
         FrontendDependencies.upickleJs.value,
-        FrontendDependencies.akkaJsVersion.value,
+        // FrontendDependencies.akkaJsVersion.value,
         //
         FrontendDependencies.sttpClientJsVersion.value,
         //
@@ -250,6 +276,70 @@ object Projects {
     )
     .enablePlugins(ScalaJSPlugin, ScalaJSWeb)
     .disablePlugins(RevolverPlugin)
+
+
+    //remove later
+
+  // lazy val escalatorFrontendLegacy: Project = project.in(file("modules/escalator/modules/escalator-frontend-legacy"))
+  //   .enablePlugins(ScalaJSPlugin)
+  //   .dependsOn(escalatorFrontendShared,escalatorSharedCommonJS)
+  //   .settings(Common.jsSettings: _*)
+  //   .settings(
+  //     scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
+
+  //     Common.compilerPlugins.map(addCompilerPlugin),  
+
+  //     libraryDependencies ++= Seq.concat(
+  //       FrontendDependencies.scalaJsDom.value,
+  //       FrontendDependencies.laminar.value,
+  //       FrontendDependencies.airstream.value,
+  //       FrontendDependencies.laminext.value,
+  //       FrontendDependencies.waypoint.value,
+  //       FrontendDependencies.circeJs.value,
+  //       FrontendDependencies.urlDsl.value,
+  //       FrontendDependencies.sttpClientJsVersion.value,
+  //       FrontendDependencies.akkaJsVersion.value       
+  //     ),
+  //     // scalaJSUseMainModuleInitializer := true,
+  //   )
+  //   .enablePlugins(ScalaJSPlugin, ScalaJSWeb)
+  //   .disablePlugins(RevolverPlugin)    
+
+
+  // lazy val frontendLegacy: Project = project.in(file("modules/frontend-legacy"))
+  //   .enablePlugins(ScalaJSPlugin)
+  //   .dependsOn(escalatorFrontendLegacy, sharedJS, sharedCommonJS)
+  //   .settings(Common.jsSettings: _*)
+  //   .settings(
+  //     scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
+  //     Common.compilerPlugins.map(addCompilerPlugin),
+  //     libraryDependencies ++= Seq.concat(
+
+  //       FrontendDependencies.scalaJsDom.value,
+  //       FrontendDependencies.laminar.value,
+  //       FrontendDependencies.autowire.value,
+  //       FrontendDependencies.catsEffect.value,
+  //       FrontendDependencies.airstream.value,
+  //       FrontendDependencies.laminext.value,
+  //       FrontendDependencies.waypoint.value,
+  //       FrontendDependencies.circeJs.value,
+  //       FrontendDependencies.urlDsl.value,
+  //       FrontendDependencies.scalablyTyped.value,
+  //       FrontendDependencies.scalaJsReact.value, //pulls in cats
+  //       FrontendDependencies.scalaCss.value,
+  //       //
+  //       FrontendDependencies.upickleJs.value,
+  //       FrontendDependencies.akkaJsVersion.value,
+  //       //
+  //       FrontendDependencies.sttpClientJsVersion.value,
+  //       //
+  //       FrontendDependencies.scalaJsPlayJson.value
+  //     ),
+
+  //     scalaJSUseMainModuleInitializer := true,
+  //   )
+  //   .enablePlugins(ScalaJSPlugin, ScalaJSWeb)
+  //   .disablePlugins(RevolverPlugin)
 
 
   lazy val cliJs: Project = project.in(file("modules/cli-js"))

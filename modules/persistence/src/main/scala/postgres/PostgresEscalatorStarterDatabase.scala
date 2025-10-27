@@ -1,7 +1,7 @@
 package com.escalatorstarter.persistence.postgres
 
 // THIS FILE IS AUTO-GENERATED. REMOVE THIS LINE TO STOP THIS FILE BEING RE-GENERATED
-// GENERATED AT: 18-09-25 17:13:10:619
+// GENERATED AT: 24-10-25 12:59:31:486
 
 import io.getquill._
 import escalator.util.logging.Logger
@@ -39,6 +39,7 @@ class PostgresEscalatorStarterDatabase(
   object entities extends PostgresEntitiesTable(this) with PostgresCustomEncoder
   object posts extends PostgresPostsTable(this) with PostgresCustomEncoder
   object tokens extends PostgresTokensTable(this) with PostgresCustomEncoder
+  object userSessions extends PostgresUserSessionsTable(this) with PostgresCustomEncoder
   object users extends PostgresUsersTable(this) with PostgresCustomEncoder
   object workQueues extends PostgresWorkQueuesTable(this) with PostgresCustomEncoder
 
@@ -48,6 +49,7 @@ class PostgresEscalatorStarterDatabase(
   //	object entities extends EntitiesRepository(this)
   //	object posts extends PostsRepository(this)
   //	object tokens extends TokensRepository(this)
+  //	object userSessions extends UserSessionsRepository(this)
   //	object users extends UsersRepository(this)
   //	object workQueues extends WorkQueuesRepository(this)
 }

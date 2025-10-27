@@ -32,7 +32,9 @@ import java.time.Instant
 object UserController {
   import BackendExceptionHandler._
 
-  def storeUser(user: User)(implicit repository: EscalatorStarterRepository): Task[Either[BackendError,User]] = {
+  def storeUser(user: User)(implicit
+      repository: EscalatorStarterRepository
+  ): Task[Either[BackendError, User]] = {
     (
       for {
         maybeDbUser <- Task.fromFuture(repository.users.upsert(user))

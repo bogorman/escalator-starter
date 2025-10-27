@@ -1,7 +1,7 @@
 package com.escalatorstarter.persistence.postgres.tables
 
 // THIS FILE IS AUTO-GENERATED. REMOVE THIS LINE TO STOP THIS FILE BEING RE-GENERATED
-// GENERATED AT: 18-09-25 17:13:11:540
+// GENERATED AT: 24-10-25 12:59:32:363
 
 import scala.concurrent.Future
 
@@ -24,7 +24,7 @@ import com.escalatorstarter.persistence.postgres.PostgresCustomEncoder
 import com.escalatorstarter.common.persistence.postgres.PostgresMappedEncoder
 
 import com.escalatorstarter.models._
-import com.escalatorstarter.models.events._
+// import com.escalatorstarter.models.events._
 
 import com.escalatorstarter.persistence.database.tables.PostsTable
 
@@ -65,7 +65,7 @@ abstract class PostgresPostsTable(database: PostgresDatabase)(implicit
         }
         .flatMap { result =>
           writeWithTimestamp(result, ts)(Future.successful(()))
-            .publishingCreated((m, cid, time) => PostCreated(m, id = p.id, cid, time))
+            .publishingCreated((m, cid, time) => events.PostCreated(m, id = p.id, cid, time))
         }
     }
 
@@ -93,7 +93,9 @@ abstract class PostgresPostsTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => PostUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.PostUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Post found with id $id"))
@@ -119,7 +121,9 @@ abstract class PostgresPostsTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => PostUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.PostUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Post found with id $id"))
@@ -145,7 +149,9 @@ abstract class PostgresPostsTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => PostUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.PostUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Post found with id $id"))
@@ -166,6 +172,18 @@ abstract class PostgresPostsTable(database: PostgresDatabase)(implicit
       }
     }
 
+  override def getByIds(p: List[PostId]): Future[List[Post]] =
+    monitored("getByIds") {
+      read {
+        ctx
+          .run(
+            query[Post]
+              .filter(obj => liftQuery(p).contains(obj.id))
+          )
+          .runToFuture
+      }
+    }
+
   override def update(p: Post): Future[Post] =
     monitored("update") {
       if (p.id == PostId(0L)) {
@@ -182,7 +200,7 @@ abstract class PostgresPostsTable(database: PostgresDatabase)(implicit
                 .update(lift(updatedModel))
             )
             .runToFuture
-        }.publishingUpdated((cur, prev, cid, time) => PostUpdated(cur, prev, id = p.id, cid, time))
+        }.publishingUpdated((cur, prev, cid, time) => events.PostUpdated(cur, prev, id = p.id, cid, time))
       }
     }
 
@@ -211,10 +229,10 @@ abstract class PostgresPostsTable(database: PostgresDatabase)(implicit
               .delete
           )
           .runToFuture
-      }.publishingDeleted((m, cid, time) => PostDeleted(m, id = p.id, cid, time))
+      }.publishingDeleted((m, cid, time) => events.PostDeleted(m, id = p.id, cid, time))
     }
 
-  override def getByUserId(userId: UserId): Future[List[Post]] =
+  override def getListByUserId(userId: UserId): Future[List[Post]] =
     monitored("get-by-user-id") {
       read {
         ctx
@@ -226,7 +244,7 @@ abstract class PostgresPostsTable(database: PostgresDatabase)(implicit
       }
     }
 
-  override def getByUserIds(userIds: List[UserId]): Future[List[Post]] =
+  override def getListByUserIds(userIds: List[UserId]): Future[List[Post]] =
     monitored("get-by-user-ids") {
       read {
         ctx

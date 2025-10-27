@@ -1,7 +1,7 @@
 package com.escalatorstarter.persistence.database.tables
 
 // THIS FILE IS AUTO-GENERATED. REMOVE THIS LINE TO STOP THIS FILE BEING RE-GENERATED
-// GENERATED AT: 18-09-25 17:13:10:988
+// GENERATED AT: 24-10-25 12:59:31:854
 
 import scala.concurrent.Future
 
@@ -162,6 +162,8 @@ trait EntitiesTable {
 
   def getById(e: EntityId): Future[Option[Entity]]
 
+  def getByIds(e: List[EntityId]): Future[List[Entity]]
+
   def update(e: Entity): Future[Entity]
 
   def upsert(e: Entity): Future[Entity]
@@ -172,18 +174,18 @@ trait EntitiesTable {
 
   def getByTag(tag: Option[EntityTag]): Future[Option[Entity]]
 
-  def getByEntityType(entityType: EntityType): Future[List[Entity]]
+  def getListByEntityType(entityType: EntityType): Future[List[Entity]]
 
-  def getByEntityTypes(entityTypes: List[EntityType]): Future[List[Entity]]
-  def getByUserId(userId: UserId): Future[List[Entity]]
+  def getListByEntityTypes(entityTypes: List[EntityType]): Future[List[Entity]]
+  def getListByUserId(userId: UserId): Future[List[Entity]]
 
-  def getByUserIds(userIds: List[UserId]): Future[List[Entity]]
-  def getByParentEntityId(parentEntityId: EntityId): Future[List[Entity]]
+  def getListByUserIds(userIds: List[UserId]): Future[List[Entity]]
+  def getListByParentEntityId(parentEntityId: EntityId): Future[List[Entity]]
 
-  def getByParentEntityIds(parentEntityIds: List[EntityId]): Future[List[Entity]]
-  def getByRefEntityType(refEntityType: Option[EntityType]): Future[List[Entity]]
+  def getListByParentEntityIds(parentEntityIds: List[EntityId]): Future[List[Entity]]
+  def getListByRefEntityType(refEntityType: Option[EntityType]): Future[List[Entity]]
 
-  def getByRefEntityTypes(refEntityTypes: List[Option[EntityType]]): Future[List[Entity]]
+  def getListByRefEntityTypes(refEntityTypes: List[Option[EntityType]]): Future[List[Entity]]
 
   def count: Future[Long]
 

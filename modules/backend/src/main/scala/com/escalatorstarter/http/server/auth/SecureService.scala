@@ -42,9 +42,24 @@ import org.apache.pekko.http.scaladsl.model.headers._
 import org.apache.pekko.http.scaladsl.model._
 import MediaTypes._
 
+import pureconfig._
+import pureconfig.generic.auto._
+import escalator.util.Configuration
+
 object SecureProtocol {
   case class MissingSessionCookieRejection() extends Rejection
   case class WebAppAuthenticationRejection() extends Rejection
+
+  // Auth configuration loaded from application.conf
+  case class ApiToken(
+    token: String,
+    description: String
+  )
+
+  case class AuthConfig(
+    pepper: String,
+    apiTokens: Map[String, ApiToken]
+  )
 }
 
 trait SecureService extends Secure {
@@ -52,6 +67,12 @@ trait SecureService extends Secure {
   import HeaderDirectives._
   import RouteDirectives._
   import SecureProtocol._
+
+  implicit def config: com.typesafe.config.Config
+
+  // SessionCache must be provided by implementing class (inherited from Secure trait)
+  // Virtual function to get session data by access token - must be implemented by subclass
+  protected def getSessionDataByAccessToken(accessToken: String): Option[SessionData]
 
   // implicit def rejectionHandler: RejectionHandler
 
@@ -108,23 +129,39 @@ trait SecureService extends Secure {
   }
 
   private def authTokenCheck(authTokenValue: String): Option[SessionData] = {
-    val apiFullAccessToken = getSetting("apiFullAccessToken", "9CB7F2FEF8EE4D1CBE955F0A24E365E7")
-    val apiPriceAccessToken = getSetting("apiPriceAccessToken", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")
+    // Load auth config from application.conf
+    val authConfig = Configuration.fetch[SecureProtocol.AuthConfig]("escalatorstarter.auth")
+      .getOrElse(SecureProtocol.AuthConfig("", Map.empty))
 
-    if (authTokenValue == apiFullAccessToken) {
-      Some(SessionData("0", "API Token Full Access User", None))
-    } else if (authTokenValue == apiPriceAccessToken) {
-      Some(SessionData("1", "API Token Price Access User", None))
-    } else {
-      None
+    // Convert token map to list for checking
+    val validTokens: List[SecureProtocol.ApiToken] = authConfig.apiTokens.values.toList
+
+    // Check against all configured API tokens
+    validTokens.find(_.token == authTokenValue) match {
+      case Some(apiToken: SecureProtocol.ApiToken) =>
+        Some(SessionData("api", apiToken.description, None))
+      case None =>
+        // Check if it's a user access token (UUID)
+        try {
+          val uuid = java.util.UUID.fromString(authTokenValue)
+          getSessionDataByAccessToken(uuid.toString)
+        } catch {
+          case _: IllegalArgumentException => None // Invalid UUID format
+          case _: Exception => None // General error
+        }
     }
   }
 
   private def sessionCheck(cookieOpt: Option[SessionCookie]): Option[SessionData] = {
-    val sessionCache = WebAppSessionCache
     cookieOpt match {
-      case Some(cookie) ⇒ sessionCache.getSession(cookie.value)
-      case _            ⇒ None
+      case Some(cookie) ⇒ 
+        println(s"sessionCheck: Looking up session ${cookie.value}")
+        val result = sessionCache.getSession(cookie.value)
+        println(s"sessionCheck: Session lookup result: ${result.isDefined}")
+        result
+      case _ ⇒ 
+        println("sessionCheck: No session cookie found")
+        None
     }
   }
 
@@ -147,7 +184,10 @@ trait SecureService extends Secure {
     // println(pairs)
     // println("validateAuth end")
 
-    pairs.find(_.name == SessionCookie.cookieName).map(SessionCookie(_))
+    val sessionCookie = pairs.find(_.name == SessionCookie.cookieName).map(SessionCookie(_))
+    println(s"findExistingSession: Found ${pairs.length} cookies, session cookie: ${sessionCookie.isDefined}")
+    if (sessionCookie.isDefined) println(s"Session cookie value: ${sessionCookie.get.value}")
+    sessionCookie
   }
 
   protected def cookiePairs(headers: List[HttpHeader]) = {
@@ -157,11 +197,25 @@ trait SecureService extends Secure {
   protected def validateAuth(ctx: RequestContext): Option[SessionData] = {
     lazy val bypassAuth = getBooleanSetting("bypassWebAuthentication", false)
     lazy val authTokenValue = ctx.request.uri.query().get("access_token")
+    
+    // Check for Bearer token in Authorization header
+    lazy val bearerTokenValue = ctx.request.headers
+      .find(_.name() == "Authorization")
+      .flatMap { header =>
+        val value = header.value()
+        if (value.startsWith("Bearer ")) {
+          Some(value.substring(7))
+        } else {
+          None
+        }
+      }
 
     if (bypassAuth) {
       authBypassCheck
     } else if (authTokenValue.isDefined) {
       authTokenCheck(authTokenValue.get)
+    } else if (bearerTokenValue.isDefined) {
+      authTokenCheck(bearerTokenValue.get)
     } else { //session/
       val sessionOpt = findExistingSession(ctx)
       sessionCheck(sessionOpt)

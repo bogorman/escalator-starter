@@ -5,7 +5,12 @@ object EscalatorStarterReplServer {
   import org.apache.sshd.server.auth.password.PasswordAuthenticator
   import org.apache.sshd.server.session.ServerSession
   object passwordChecker extends PasswordAuthenticator {
-    def authenticate(username: String, password: String, session: ServerSession): Boolean = {
+
+    def authenticate(
+        username: String,
+        password: String,
+        session: ServerSession
+    ): Boolean = {
       username == "es" && password == "es"
     }
   }
@@ -18,11 +23,18 @@ object EscalatorStarterReplServer {
 
     val port = 44444
 
+    val predef = """
+      import com.escalatorstarter._
+    """
+
     val replServer = new SshdRepl(
       SshServerConfig(
         address = "localhost", // or "0.0.0.0" for public-facing shells
         port = port, // Any available port
-        passwordAuthenticator = Some(passwordChecker)))
+        passwordAuthenticator = Some(passwordChecker)
+      ),
+      predef
+    )
     replServer.start()
     println("REPL Started on " + port)
     replServer

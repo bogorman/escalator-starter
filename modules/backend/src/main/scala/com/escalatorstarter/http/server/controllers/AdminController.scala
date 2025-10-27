@@ -14,9 +14,12 @@ object AdminController {
 
   case class AdminAuthentication(password: String)
 
-  def authenticator(auth: AdminAuthentication)(credentials: Credentials): Option[Unit] = credentials match {
-    case Credentials.Provided(auth.password) =>
-      Some(())
+  def authenticator(
+      auth: AdminAuthentication
+  )(credentials: Credentials): Option[Unit] =
+    credentials match {
+      case Credentials.Provided(auth.password) =>
+        Some(())
 
     case _ =>
       None

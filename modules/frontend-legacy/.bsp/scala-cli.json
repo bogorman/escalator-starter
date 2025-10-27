@@ -1,0 +1,20 @@
+{
+  "name": "scala-cli",
+  "argv": [
+    "/Users/barry/Library/Application Support/Coursier/bin/.scala-cli.aux",
+    "bsp",
+    "--json-options",
+    "/Users/barry/work/local/ES/escalator-starter/modules/frontend-legacy/.scala-build/ide-options-v2.json",
+    "--json-launcher-options",
+    "/Users/barry/work/local/ES/escalator-starter/modules/frontend-legacy/.scala-build/ide-launcher-options.json",
+    "--envs-file",
+    "/Users/barry/work/local/ES/escalator-starter/modules/frontend-legacy/.scala-build/ide-envs.json",
+    "/Users/barry/work/local/ES/escalator-starter/modules/frontend-legacy"
+  ],
+  "version": "1.6.1",
+  "bspVersion": "2.1.1",
+  "languages": [
+    "scala",
+    "java"
+  ]
+}

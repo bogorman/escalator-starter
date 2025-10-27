@@ -2,8 +2,11 @@
 lazy val escalatorDb = Projects.escalatorDb
 lazy val escalatorSharedCommon = Projects.escalatorSharedCommon
 lazy val escalatorCommon = Projects.escalatorCommon
+
+lazy val escalatorFrontendShared = Projects.escalatorFrontendShared
 lazy val escalatorFrontend = Projects.escalatorFrontend
 
+// lazy val escalatorFrontendLegacy = Projects.escalatorFrontendLegacy //remove
 
 lazy val common = Projects.common
 lazy val core = Projects.core
@@ -12,6 +15,7 @@ lazy val cli = Projects.cli
 lazy val sharedCommon = Projects.sharedCommon
 lazy val shared = Projects.shared
 lazy val frontend = Projects.frontend
+// lazy val frontendLegacy = Projects.frontendLegacy //remove
 lazy val cliJs = Projects.cliJs
 lazy val persistence = Projects.persistence
 lazy val externals = Projects.externals

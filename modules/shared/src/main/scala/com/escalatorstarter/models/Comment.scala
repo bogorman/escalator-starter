@@ -1,7 +1,7 @@
 package com.escalatorstarter.models
 
 // THIS FILE IS AUTO-GENERATED. REMOVE THIS LINE TO STOP THIS FILE BEING RE-GENERATED
-// GENERATED AT: 18-09-25 17:13:10:291
+// GENERATED AT: 24-10-25 12:59:31:169
 
 case class CommentId(id: Long) extends AnyVal
 

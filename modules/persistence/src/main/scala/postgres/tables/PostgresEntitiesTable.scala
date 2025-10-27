@@ -1,7 +1,7 @@
 package com.escalatorstarter.persistence.postgres.tables
 
 // THIS FILE IS AUTO-GENERATED. REMOVE THIS LINE TO STOP THIS FILE BEING RE-GENERATED
-// GENERATED AT: 18-09-25 17:13:11:000
+// GENERATED AT: 24-10-25 12:59:31:862
 
 import scala.concurrent.Future
 
@@ -24,7 +24,7 @@ import com.escalatorstarter.persistence.postgres.PostgresCustomEncoder
 import com.escalatorstarter.common.persistence.postgres.PostgresMappedEncoder
 
 import com.escalatorstarter.models._
-import com.escalatorstarter.models.events._
+// import com.escalatorstarter.models.events._
 
 import com.escalatorstarter.persistence.database.tables.EntitiesTable
 
@@ -65,7 +65,7 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
         }
         .flatMap { result =>
           writeWithTimestamp(result, ts)(Future.successful(()))
-            .publishingCreated((m, cid, time) => EntityCreated(m, id = e.id, cid, time))
+            .publishingCreated((m, cid, time) => events.EntityCreated(m, id = e.id, cid, time))
         }
     }
 
@@ -145,10 +145,10 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
           _ <- Task.deferFuture {
             if (wasInserted)
               writeWithTimestamp(result, ts)(Future.successful(()))
-                .publishingCreated((cur, cid, time) => EntityCreated(cur, id = cur.id, cid, time))
+                .publishingCreated((cur, cid, time) => events.EntityCreated(cur, id = cur.id, cid, time))
             else
               writeWithTimestamp(result, ts)(Future.successful(()))
-                .publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, prev, id = cur.id, cid, time))
+                .publishingUpdated((cur, prev, cid, time) => events.EntityUpdated(cur, prev, id = cur.id, cid, time))
           }
         } yield result
 
@@ -187,7 +187,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -213,7 +215,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -239,7 +243,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -265,7 +271,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -291,7 +299,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -317,7 +327,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -343,7 +355,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -369,7 +383,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -395,7 +411,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -421,7 +439,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -447,7 +467,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -473,7 +495,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -499,7 +523,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -525,7 +551,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -551,7 +579,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -577,7 +607,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -603,7 +635,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -629,7 +663,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -655,7 +691,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -681,7 +719,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -707,7 +747,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -733,7 +775,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -759,7 +803,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -785,7 +831,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -811,7 +859,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -837,7 +887,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -863,7 +915,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -889,7 +943,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -915,7 +971,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -941,7 +999,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -967,7 +1027,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -993,7 +1055,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -1022,7 +1086,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -1048,7 +1114,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -1074,7 +1142,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with id $id"))
@@ -1100,7 +1170,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1126,7 +1198,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1152,7 +1226,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1178,7 +1254,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1204,7 +1282,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1230,7 +1310,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1256,7 +1338,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1282,7 +1366,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1308,7 +1394,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1334,7 +1422,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1360,7 +1450,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1386,7 +1478,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1412,7 +1506,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1438,7 +1534,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1464,7 +1562,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1490,7 +1590,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1516,7 +1618,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1542,7 +1646,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1568,7 +1674,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1597,7 +1705,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1623,7 +1733,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1649,7 +1761,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1675,7 +1789,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1701,7 +1817,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1727,7 +1845,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1753,7 +1873,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1779,7 +1901,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1805,7 +1929,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1834,7 +1960,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1860,7 +1988,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1889,7 +2019,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1915,7 +2047,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1944,7 +2078,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1973,7 +2109,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -1999,7 +2137,9 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.EntityUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Entity found with tag: Option[EntityTag]"))
@@ -2020,6 +2160,18 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
       }
     }
 
+  override def getByIds(e: List[EntityId]): Future[List[Entity]] =
+    monitored("getByIds") {
+      read {
+        ctx
+          .run(
+            query[Entity]
+              .filter(obj => liftQuery(e).contains(obj.id))
+          )
+          .runToFuture
+      }
+    }
+
   override def update(e: Entity): Future[Entity] =
     monitored("update") {
       if (e.id == EntityId(0L)) {
@@ -2036,7 +2188,7 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
                 .update(lift(updatedModel))
             )
             .runToFuture
-        }.publishingUpdated((cur, prev, cid, time) => EntityUpdated(cur, prev, id = e.id, cid, time))
+        }.publishingUpdated((cur, prev, cid, time) => events.EntityUpdated(cur, prev, id = e.id, cid, time))
       }
     }
 
@@ -2065,7 +2217,7 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
               .delete
           )
           .runToFuture
-      }.publishingDeleted((m, cid, time) => EntityDeleted(m, id = e.id, cid, time))
+      }.publishingDeleted((m, cid, time) => events.EntityDeleted(m, id = e.id, cid, time))
     }
 
   override def getByTag(tag: Option[EntityTag]): Future[Option[Entity]] =
@@ -2082,7 +2234,7 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
       }
     }
 
-  override def getByEntityType(entityType: EntityType): Future[List[Entity]] =
+  override def getListByEntityType(entityType: EntityType): Future[List[Entity]] =
     monitored("get-by-entity-type") {
       read {
         ctx
@@ -2094,7 +2246,7 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
       }
     }
 
-  override def getByEntityTypes(entityTypes: List[EntityType]): Future[List[Entity]] =
+  override def getListByEntityTypes(entityTypes: List[EntityType]): Future[List[Entity]] =
     monitored("get-by-entity-types") {
       read {
         ctx
@@ -2106,7 +2258,7 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
       }
     }
 
-  override def getByUserId(userId: UserId): Future[List[Entity]] =
+  override def getListByUserId(userId: UserId): Future[List[Entity]] =
     monitored("get-by-user-id") {
       read {
         ctx
@@ -2118,7 +2270,7 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
       }
     }
 
-  override def getByUserIds(userIds: List[UserId]): Future[List[Entity]] =
+  override def getListByUserIds(userIds: List[UserId]): Future[List[Entity]] =
     monitored("get-by-user-ids") {
       read {
         ctx
@@ -2130,7 +2282,7 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
       }
     }
 
-  override def getByParentEntityId(parentEntityId: EntityId): Future[List[Entity]] =
+  override def getListByParentEntityId(parentEntityId: EntityId): Future[List[Entity]] =
     monitored("get-by-parent-entity-id") {
       read {
         ctx
@@ -2142,7 +2294,7 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
       }
     }
 
-  override def getByParentEntityIds(parentEntityIds: List[EntityId]): Future[List[Entity]] =
+  override def getListByParentEntityIds(parentEntityIds: List[EntityId]): Future[List[Entity]] =
     monitored("get-by-parent-entity-ids") {
       read {
         ctx
@@ -2154,7 +2306,7 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
       }
     }
 
-  override def getByRefEntityType(refEntityType: Option[EntityType]): Future[List[Entity]] =
+  override def getListByRefEntityType(refEntityType: Option[EntityType]): Future[List[Entity]] =
     monitored("get-by-ref-entity-type") {
       read {
         ctx
@@ -2166,7 +2318,7 @@ abstract class PostgresEntitiesTable(database: PostgresDatabase)(implicit
       }
     }
 
-  override def getByRefEntityTypes(refEntityTypes: List[Option[EntityType]]): Future[List[Entity]] =
+  override def getListByRefEntityTypes(refEntityTypes: List[Option[EntityType]]): Future[List[Entity]] =
     monitored("get-by-ref-entity-types") {
       read {
         ctx

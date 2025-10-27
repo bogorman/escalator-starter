@@ -1,7 +1,7 @@
 package com.escalatorstarter.models.events
 
 // THIS FILE IS AUTO-GENERATED. REMOVE THIS LINE TO STOP THIS FILE BEING RE-GENERATED
-// GENERATED AT: 18-09-25 17:13:12:338
+// GENERATED AT: 24-10-25 12:59:33:256
 
 import escalator.ddd.{ Event, PersistentEvent }
 import escalator.models.CorrelationId

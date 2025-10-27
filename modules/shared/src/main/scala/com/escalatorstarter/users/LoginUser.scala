@@ -1,4 +1,4 @@
-package models.users
+package com.escalatorstarter.users
 
 import escalator.errors.BackendError
 import escalator.validators.FieldsValidator
@@ -9,7 +9,10 @@ final case class LoginUser(email: String, password: String)
 
 object LoginUser {
 
-  implicit def loginUserWithUnit: WithUnit[LoginUser] = WithUnit(LoginUser("", ""))
+  implicit def loginUserWithUnit: WithUnit[LoginUser] =
+    WithUnit(
+      LoginUser("", "")
+    )
 
   def validator: FieldsValidator[LoginUser, BackendError] =
     FieldsValidator(

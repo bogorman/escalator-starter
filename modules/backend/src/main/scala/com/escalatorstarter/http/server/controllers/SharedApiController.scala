@@ -43,7 +43,9 @@ class SharedApiController()(implicit repository: EscalatorStarterRepository) ext
 
 object SharedApiController {
 
-  def apply()(implicit repository: EscalatorStarterRepository): SharedApiController = {
+  def apply()(implicit
+      repository: EscalatorStarterRepository
+  ): SharedApiController = {
     new SharedApiController()
   }
 }

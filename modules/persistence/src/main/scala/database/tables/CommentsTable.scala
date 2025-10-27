@@ -1,7 +1,7 @@
 package com.escalatorstarter.persistence.database.tables
 
 // THIS FILE IS AUTO-GENERATED. REMOVE THIS LINE TO STOP THIS FILE BEING RE-GENERATED
-// GENERATED AT: 18-09-25 17:13:10:892
+// GENERATED AT: 24-10-25 12:59:31:752
 
 import scala.concurrent.Future
 
@@ -24,6 +24,8 @@ trait CommentsTable {
 
   def getById(c: CommentId): Future[Option[Comment]]
 
+  def getByIds(c: List[CommentId]): Future[List[Comment]]
+
   def update(c: Comment): Future[Comment]
 
   def upsert(c: Comment): Future[Comment]
@@ -32,9 +34,9 @@ trait CommentsTable {
 
   def delete(c: Comment): Future[Comment]
 
-  def getByPostId(postId: PostId): Future[List[Comment]]
+  def getListByPostId(postId: PostId): Future[List[Comment]]
 
-  def getByPostIds(postIds: List[PostId]): Future[List[Comment]]
+  def getListByPostIds(postIds: List[PostId]): Future[List[Comment]]
 
   def count: Future[Long]
 

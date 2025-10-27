@@ -8,8 +8,8 @@ addSbtPlugin("ch.epfl.scala" % "sbt-bloop" % "1.5.6")
 
 addSbtPlugin("com.vmunier"               % "sbt-web-scalajs"           % "1.2.0")
 
-// addSbtPlugin("org.scala-js"              % "sbt-scalajs"               % "1.16.0") //1.10
-addSbtPlugin("org.scala-js"              % "sbt-scalajs"               % "1.20.1")
+addSbtPlugin("org.scala-js"              % "sbt-scalajs"               % "1.16.0") //1.10 - for legacy
+// addSbtPlugin("org.scala-js"              % "sbt-scalajs"               % "1.20.1")
 
 // addSbtPlugin("io.spray"                  % "sbt-revolver"              % "0.9.1") //
 // addSbtPlugin("com.eed3si9n"              % "sbt-assembly"              % "1.0.0")//

@@ -46,5 +46,6 @@ class EscalatorStarterRepository(
      object posts extends PostsRepository(this)
      object tokens extends TokensRepository(this)
      object users extends UsersRepository(this)
+     object userSessions extends UserSessionsRepository(this)
      object workQueues extends WorkQueuesRepository(this)
 }

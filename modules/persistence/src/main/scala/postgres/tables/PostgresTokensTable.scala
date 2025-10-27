@@ -1,7 +1,7 @@
 package com.escalatorstarter.persistence.postgres.tables
 
 // THIS FILE IS AUTO-GENERATED. REMOVE THIS LINE TO STOP THIS FILE BEING RE-GENERATED
-// GENERATED AT: 18-09-25 17:13:11:595
+// GENERATED AT: 24-10-25 12:59:32:428
 
 import scala.concurrent.Future
 
@@ -24,7 +24,7 @@ import com.escalatorstarter.persistence.postgres.PostgresCustomEncoder
 import com.escalatorstarter.common.persistence.postgres.PostgresMappedEncoder
 
 import com.escalatorstarter.models._
-import com.escalatorstarter.models.events._
+// import com.escalatorstarter.models.events._
 
 import com.escalatorstarter.persistence.database.tables.TokensTable
 
@@ -65,7 +65,7 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
         }
         .flatMap { result =>
           writeWithTimestamp(result, ts)(Future.successful(()))
-            .publishingCreated((m, cid, time) => TokenCreated(m, id = t.id, cid, time))
+            .publishingCreated((m, cid, time) => events.TokenCreated(m, id = t.id, cid, time))
         }
     }
 
@@ -120,10 +120,10 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
           _ <- Task.deferFuture {
             if (wasInserted)
               writeWithTimestamp(result, ts)(Future.successful(()))
-                .publishingCreated((cur, cid, time) => TokenCreated(cur, id = cur.id, cid, time))
+                .publishingCreated((cur, cid, time) => events.TokenCreated(cur, id = cur.id, cid, time))
             else
               writeWithTimestamp(result, ts)(Future.successful(()))
-                .publishingUpdated((cur, prev, cid, time) => TokenUpdated(cur, prev, id = cur.id, cid, time))
+                .publishingUpdated((cur, prev, cid, time) => events.TokenUpdated(cur, prev, id = cur.id, cid, time))
           }
         } yield result
 
@@ -162,7 +162,9 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Token found with id $id"))
@@ -188,7 +190,9 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Token found with id $id"))
@@ -214,7 +218,9 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Token found with id $id"))
@@ -240,7 +246,9 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Token found with id $id"))
@@ -266,7 +274,9 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Token found with id $id"))
@@ -292,7 +302,9 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Token found with id $id"))
@@ -318,7 +330,9 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Token found with id $id"))
@@ -344,7 +358,9 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Token found with id $id"))
@@ -370,7 +386,9 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Token found with id $id"))
@@ -396,7 +414,9 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Token found with id $id"))
@@ -422,7 +442,9 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Token found with address: TokenAddress"))
@@ -448,7 +470,9 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Token found with address: TokenAddress"))
@@ -474,7 +498,9 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Token found with address: TokenAddress"))
@@ -500,7 +526,9 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Token found with address: TokenAddress"))
@@ -526,7 +554,9 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Token found with address: TokenAddress"))
@@ -552,7 +582,9 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Token found with address: TokenAddress"))
@@ -578,7 +610,9 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Token found with address: TokenAddress"))
@@ -604,7 +638,9 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Token found with address: TokenAddress"))
@@ -633,7 +669,9 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Token found with address: TokenAddress"))
@@ -659,7 +697,9 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
                   )
               )
               .runToFuture
-          }.publishingUpdated((cur, prev, cid, time) => TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time))
+          }.publishingUpdated((cur, prev, cid, time) =>
+            events.TokenUpdated(cur, Some(updatedModel), id = cur.id, cid, time)
+          )
 
         case None =>
           Future.failed(new NoSuchElementException(s"No Token found with address: TokenAddress"))
@@ -680,6 +720,18 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
       }
     }
 
+  override def getByIds(t: List[TokenId]): Future[List[Token]] =
+    monitored("getByIds") {
+      read {
+        ctx
+          .run(
+            query[Token]
+              .filter(obj => liftQuery(t).contains(obj.id))
+          )
+          .runToFuture
+      }
+    }
+
   override def update(t: Token): Future[Token] =
     monitored("update") {
       if (t.id == TokenId(0L)) {
@@ -696,7 +748,7 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
                 .update(lift(updatedModel))
             )
             .runToFuture
-        }.publishingUpdated((cur, prev, cid, time) => TokenUpdated(cur, prev, id = t.id, cid, time))
+        }.publishingUpdated((cur, prev, cid, time) => events.TokenUpdated(cur, prev, id = t.id, cid, time))
       }
     }
 
@@ -725,7 +777,7 @@ abstract class PostgresTokensTable(database: PostgresDatabase)(implicit
               .delete
           )
           .runToFuture
-      }.publishingDeleted((m, cid, time) => TokenDeleted(m, id = t.id, cid, time))
+      }.publishingDeleted((m, cid, time) => events.TokenDeleted(m, id = t.id, cid, time))
     }
 
   override def getByAddres(address: TokenAddress): Future[Option[Token]] =

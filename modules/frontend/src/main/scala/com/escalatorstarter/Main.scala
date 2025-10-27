@@ -1,51 +1,51 @@
-package frontend
+package escalator.starter
 
-import com.raquo.laminar.nodes.RootNode
+import scala.scalajs.js
+import scala.scalajs.js.annotation._
 import org.scalajs.dom
-import org.scalajs.dom.raw.Element
+import com.raquo.laminar.api.L._
+import com.escalatorstarter.routes.Router
+import com.escalatorstarter.state.AppState
 
-import cats.effect.unsafe.implicits.global
-
-import cats.effect.IO
-import cats.effect.ExitCode
-
-import scala.scalajs.js.annotation.{JSExportTopLevel, JSImport}
-import scala.scalajs.{LinkingInfo, js}
-
-object IndexCSS extends js.Object
-
+/**
+  * Main entry point for the Escalator Starter application
+  */
 object Main {
-  val css: IndexCSS.type = IndexCSS
+  def main(args: Array[String]): Unit = {
+    // Initialize any startup logic here
+    initializeApp()
 
-  val initializeHot: IO[Unit] = IO {
-    if (LinkingInfo.developmentMode) {
-      //hot.initialize()
-      println("hot?")
-    }
+    // Render the application
+    renderOnDomContentLoaded(
+      dom.document.getElementById("app"),
+      EscalatorStarterApp.appElement()
+    )
   }
 
-  val createContainer: IO[Element] = IO {
-    Option(dom.document.getElementById("app-container")).getOrElse {
-      val elem = dom.document.createElement("div")
-      elem.id = "app-container"
-      dom.document.body.appendChild(elem)
-      elem
-    }
-  }
+  /**
+    * Initialize application state and perform any startup tasks
+    */
+  private def initializeApp(): Unit = {
+    dom.console.log("Escalator Starter App initializing...")
 
-  def render(container: dom.Element): IO[RootNode] = IO {
-    com.raquo.laminar.api.L.render(container, frontend.app.EscalatorStarterWebApp())
-  }
+    // Always use dark mode
+    AppState.setDarkMode(true)
 
-  val program: IO[ExitCode] =
-    for {
-      _ <- initializeHot
-      container <- createContainer
-      _ <- render(container)
-    } yield ExitCode.Success
-
-  def main(args: Array[String]): Unit = {    
-    program.start.unsafeRunAndForget()
+    dom.console.log("Escalator Starter App initialized")
   }
 }
 
+/**
+  * Root application component
+  */
+object EscalatorStarterApp {
+  def appElement(): Element = {
+    div(
+      className := "min-h-screen",
+      className <-- AppState.isDarkMode.signal.map { isDark =>
+        if (isDark) "dark bg-gray-900 text-white" else "bg-white text-gray-900"
+      },
+      Router.view
+    )
+  }
+}

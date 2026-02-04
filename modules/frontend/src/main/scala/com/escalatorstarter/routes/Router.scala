@@ -2,17 +2,20 @@ package com.escalatorstarter.routes
 
 import com.raquo.laminar.api.L._
 import org.scalajs.dom
-import com.escalatorstarter.components.pages.{
-  LandingPage, LoginPage, RegisterPage, DashboardPage,
+import com.escalatorstarter.pages.core.{LandingPage, LoginPage, RegisterPage, DashboardPage}
+import com.escalatorstarter.pages.domain.{
   DataTableTestPage, ToastTestPage, DropdownTestPage,
   FormTestPage, ModalTestPage, ChartsTestPage
 }
 import com.escalatorstarter.components.layout.dashboard.DashboardLayout
+import escalator.frontend.components.ui.Spinner
 import com.escalatorstarter.state.AppState
 import com.escalatorstarter.models.User
 
 /**
-  * Simple URL-based routing for the Escalator Starter application
+  * URL-based routing for the Escalator Starter application.
+  *
+  * Uses segment-based path parsing with centralized auth guard.
   */
 object Router {
 
@@ -21,9 +24,12 @@ object Router {
     */
   sealed trait Page
   object Page {
+    // Auth pages
     case object Landing extends Page
     case object Login extends Page
     case object Register extends Page
+
+    // Dashboard
     case object Dashboard extends Page
 
     // Component test pages
@@ -35,59 +41,78 @@ object Router {
     case object ChartsTest extends Page
   }
 
+  private val currentPage = Var[Page](Page.Landing)
+
   /**
-    * Current page signal derived from URL
+    * Check if a page requires authentication
     */
-  val currentPage: Signal[Page] = {
-    val urlVar = Var(getCurrentPage())
-
-    // Listen to popstate events (browser back/forward)
-    dom.window.addEventListener("popstate", (_: dom.Event) => {
-      urlVar.set(getCurrentPage())
-    })
-
-    urlVar.signal
+  private def requiresAuth(page: Page): Boolean = page match {
+    case Page.Landing | Page.Login | Page.Register => false
+    case _ => true
   }
 
   /**
-    * Parse current URL to determine page
+    * Apply auth guard - redirect to login if not authenticated
     */
-  private def getCurrentPage(): Page = {
-    val path = dom.window.location.pathname
-    path match {
-      case "/" | "/landing" => Page.Landing
-      case "/login" => Page.Login
-      case "/register" => Page.Register
-      case "/dashboard" => Page.Dashboard
+  private def applyAuthGuard(page: Page): Page = {
+    if (requiresAuth(page) && AppState.currentUser.now().isEmpty) {
+      dom.console.warn(s"Access denied to ${page}. Redirecting to login.")
+      Page.Login
+    } else {
+      page
+    }
+  }
+
+  /**
+    * Parse URL path to determine current page
+    */
+  private def parsePath(path: String): Page = {
+    val segments = path.split("/").filter(_.nonEmpty).toList
+
+    val page = segments match {
+      // Auth
+      case Nil => Page.Landing
+      case "login" :: Nil => Page.Login
+      case "register" :: Nil => Page.Register
+
+      // Dashboard
+      case "dashboard" :: Nil => Page.Dashboard
 
       // Test pages
-      case "/test/datatable" => Page.DataTableTest
-      case "/test/toast" => Page.ToastTest
-      case "/test/dropdown" => Page.DropdownTest
-      case "/test/forms" => Page.FormTest
-      case "/test/modals" => Page.ModalTest
-      case "/test/charts" => Page.ChartsTest
+      case "test" :: "datatable" :: Nil => Page.DataTableTest
+      case "test" :: "toast" :: Nil => Page.ToastTest
+      case "test" :: "dropdown" :: Nil => Page.DropdownTest
+      case "test" :: "forms" :: Nil => Page.FormTest
+      case "test" :: "modals" :: Nil => Page.ModalTest
+      case "test" :: "charts" :: Nil => Page.ChartsTest
 
-      case _ => Page.Landing // Default to landing
+      // Default to landing
+      case _ => Page.Landing
     }
+
+    applyAuthGuard(page)
   }
 
   /**
     * Navigate to a new page
     */
   def navigateTo(page: Page): Unit = {
-    val url = pageToUrl(page)
-    dom.window.history.pushState(null, "", url)
-    dom.window.dispatchEvent(new dom.Event("popstate"))
+    val guardedPage = applyAuthGuard(page)
+    val path = pageToPath(guardedPage)
+    dom.window.history.pushState(null, "", path)
+    currentPage.set(guardedPage)
   }
 
   /**
     * Convert page to URL path
     */
-  private def pageToUrl(page: Page): String = page match {
+  private def pageToPath(page: Page): String = page match {
+    // Auth
     case Page.Landing => "/"
     case Page.Login => "/login"
     case Page.Register => "/register"
+
+    // Dashboard
     case Page.Dashboard => "/dashboard"
 
     // Test pages
@@ -100,95 +125,79 @@ object Router {
   }
 
   /**
-    * Main router view - renders the appropriate page based on current route
+    * Initialize router - read initial path and set up popstate listener
     */
-  def view: HtmlElement = {
+  private def initialize(): Unit = {
+    val initialPath = dom.window.location.pathname
+    currentPage.set(parsePath(initialPath))
+
+    // Handle browser back/forward buttons
+    dom.window.addEventListener(
+      "popstate",
+      (_: dom.PopStateEvent) => {
+        val path = dom.window.location.pathname
+        currentPage.set(parsePath(path))
+      }
+    )
+  }
+
+  // Call initialize on first access
+  initialize()
+
+  // Re-apply auth guard when authentication state changes
+  AppState.currentUser.signal.addObserver(Observer[Option[User]] { _ =>
+    val currentPath = dom.window.location.pathname
+    val newPage = parsePath(currentPath)
+    if (newPage != currentPage.now()) {
+      currentPage.set(newPage)
+    }
+  })(unsafeWindowOwner)
+
+  /**
+    * Main view that switches between pages
+    */
+  val view: HtmlElement = {
     div(
-      child <-- currentPage.combineWith(AppState.currentUser.signal).map {
-        case (page, userOpt) =>
-          renderPage(page, userOpt)
+      className := "h-full",
+      child <-- currentPage.signal.combineWith(AppState.sessionRestoreInProgress.signal).map {
+        case (page, true) if requiresAuth(page) =>
+          // Show loading spinner while session restoration is in progress for auth-required pages
+          Spinner.fullPage("Restoring session...")
+        case (Page.Landing, _) => LandingPage()
+        case (Page.Login, _) => LoginPage()
+        case (Page.Register, _) => RegisterPage()
+        case (Page.Dashboard, _) => wrapInDashboardLayout(DashboardPage())
+
+        // Test pages - all wrapped in dashboard layout
+        case (Page.DataTableTest, _) => wrapInDashboardLayout(DataTableTestPage())
+        case (Page.ToastTest, _) => wrapInDashboardLayout(ToastTestPage())
+        case (Page.DropdownTest, _) => wrapInDashboardLayout(DropdownTestPage())
+        case (Page.FormTest, _) => wrapInDashboardLayout(FormTestPage())
+        case (Page.ModalTest, _) => wrapInDashboardLayout(ModalTestPage())
+        case (Page.ChartsTest, _) => wrapInDashboardLayout(ChartsTestPage())
       }
     )
   }
 
   /**
-    * Render the appropriate page component
+    * Helper for creating navigation links
     */
-  private def renderPage(page: Page, userOpt: Option[User]): HtmlElement = {
-    // If user is logged in and trying to access auth pages, redirect to dashboard
-    if (userOpt.isDefined && (page == Page.Landing || page == Page.Login || page == Page.Register)) {
-      navigateTo(Page.Dashboard)
-    }
+  def link(page: Page, text: String, classes: String = ""): HtmlElement = {
+    a(
+      href := "#",
+      className := classes,
+      text,
+      onClick.preventDefault --> Observer[dom.MouseEvent](_ => navigateTo(page))
+    )
+  }
 
-    // If user is not logged in and trying to access dashboard, redirect to login
-    if (userOpt.isEmpty && page == Page.Dashboard) {
-      navigateTo(Page.Login)
-    }
-
-    page match {
-      case Page.Landing => LandingPage()
-      case Page.Login => LoginPage()
-      case Page.Register => RegisterPage()
-      case Page.Dashboard =>
-        userOpt match {
-          case Some(user) =>
-            DashboardLayout(
-              DashboardPage()
-            )
-          case None =>
-            // Redirect to login if somehow we get here without a user
-            navigateTo(Page.Login)
-            LoginPage()
-        }
-
-      // Test pages - require authentication
-      case Page.DataTableTest =>
-        userOpt match {
-          case Some(user) => DashboardLayout(DataTableTestPage())
-          case None =>
-            navigateTo(Page.Login)
-            LoginPage()
-        }
-
-      case Page.ToastTest =>
-        userOpt match {
-          case Some(user) => DashboardLayout(ToastTestPage())
-          case None =>
-            navigateTo(Page.Login)
-            LoginPage()
-        }
-
-      case Page.DropdownTest =>
-        userOpt match {
-          case Some(user) => DashboardLayout(DropdownTestPage())
-          case None =>
-            navigateTo(Page.Login)
-            LoginPage()
-        }
-
-      case Page.FormTest =>
-        userOpt match {
-          case Some(user) => DashboardLayout(FormTestPage())
-          case None =>
-            navigateTo(Page.Login)
-            LoginPage()
-        }
-
-      case Page.ModalTest =>
-        userOpt match {
-          case Some(user) => DashboardLayout(ModalTestPage())
-          case None =>
-            navigateTo(Page.Login)
-            LoginPage()
-        }
-
-      case Page.ChartsTest =>
-        userOpt match {
-          case Some(user) => DashboardLayout(ChartsTestPage())
-          case None =>
-            navigateTo(Page.Login)
-            LoginPage()
-        }
-    }
+  /**
+    * Wrap content in DashboardLayout with sidebar
+    * Converts current page to path string for sidebar highlighting
+    * User information is retrieved from AppState automatically
+    */
+  private def wrapInDashboardLayout(content: HtmlElement): HtmlElement = {
+    val currentPathSignal = currentPage.signal.map(pageToPath)
+    DashboardLayout(currentPathSignal)(content)
   }
 }

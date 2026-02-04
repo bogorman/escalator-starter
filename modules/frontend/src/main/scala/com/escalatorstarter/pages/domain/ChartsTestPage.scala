@@ -1,4 +1,4 @@
-package com.escalatorstarter.components.pages
+package com.escalatorstarter.pages.domain
 
 import com.raquo.laminar.api.L._
 import escalator.frontend.components.charts._

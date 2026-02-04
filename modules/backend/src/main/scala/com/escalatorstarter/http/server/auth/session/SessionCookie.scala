@@ -12,7 +12,8 @@ object SessionCookie {
 
   // The name of the "session" cookie sent down to the client,
   // usually a browser.
-  private val sessionCookieName = "escalatorstarter_session"
+  // Using centralized constant to ensure consistency across the app
+  private val sessionCookieName = AuthConstants.SESSION_COOKIE_NAME
 
   def cookieName = sessionCookieName
 
@@ -43,7 +44,8 @@ object SessionCookie {
         // outgoing cookies, meaning the cookie will only be accepted
         // over HTTPS (secure) connections.
         secure = false,
-        httpOnly = true
+        httpOnly = true,
+        path = Some("/")  // Send cookie for all paths, not just /api
       )
     )
   }

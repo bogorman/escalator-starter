@@ -1,35 +1,22 @@
 package com.escalatorstarter.components.layout.dashboard
 
 import com.raquo.laminar.api.L._
-import com.escalatorstarter.components.layout.dashboard.{DashboardHeader, SidebarNav}
+import escalator.frontend.components.layout.dashboard.{DashboardLayout => GenericDashboardLayout}
 
 /**
-  * Main dashboard layout wrapper
-  * Provides the standard dashboard structure with header and sidebar
+  * Main dashboard layout wrapper.
+  *
+  * This is a thin wrapper around the generic DashboardLayout from escalator-frontend,
+  * composing escalator-starter-specific Sidebar and DashboardHeader components.
   */
 object DashboardLayout {
 
-  def apply(content: HtmlElement): HtmlElement = {
-    div(
-      className := "min-h-screen bg-gray-50 dark:bg-gray-900",
+  def apply(currentPath: Signal[String])(children: HtmlElement*): HtmlElement = {
+    // Build sidebar and header using escalator-starter components
+    val sidebar = Sidebar(currentPath)
+    val header = DashboardHeader()
 
-      // Dashboard Header
-      DashboardHeader(),
-
-      // Main content area with sidebar
-      div(
-        className := "flex",
-
-        // Sidebar
-        SidebarNav(),
-
-        // Main content
-        main(
-          className := "flex-1 p-8",
-          className := "ml-64", // Offset for sidebar width
-          content
-        )
-      )
-    )
+    // Use generic layout component
+    GenericDashboardLayout(sidebar, header)(children: _*)
   }
 }

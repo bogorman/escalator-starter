@@ -15,6 +15,10 @@ class AppCustomGenerator extends CustomGenerator
 		fileData
 	}
 
+	def scopeForTable(tableName: String): Option[String] = {
+		None
+	}
+
 	//# DO THIS IN A SHARED FILE as not its repeating code!
 	def customMappers(tableClass: String) = {
 		""

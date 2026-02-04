@@ -34,8 +34,8 @@ object Common {
   )
 
     //"2.13.6"
-  val sVersion = "2.13.16"
-  // val sVersion = "2.13.17"
+  // val sVersion = "2.13.16"
+  val sVersion = "2.13.17"
 
   val baseSettings = List(
     organization := "com.escalatorstarter",

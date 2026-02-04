@@ -4,7 +4,7 @@ import sbt.Keys._
 object JavaVersionCheck {
 
   // Define the required Java version
-  val requiredJavaVersion = "24"
+  val requiredJavaVersion = "25"
 
   // A helper function to extract the current Java version
   def getJavaVersion: String = {

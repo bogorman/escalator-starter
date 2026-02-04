@@ -6,9 +6,11 @@ addSbtPlugin("io.github.davidmweber" % "flyway-sbt" % "7.4.0")
 
 addSbtPlugin("ch.epfl.scala" % "sbt-bloop" % "1.5.6")
 
-addSbtPlugin("com.vmunier"               % "sbt-web-scalajs"           % "1.2.0")
+// addSbtPlugin("com.vmunier"               % "sbt-web-scalajs"           % "1.2.0")
+addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % "1.3.0")
 
-addSbtPlugin("org.scala-js"              % "sbt-scalajs"               % "1.16.0") //1.10 - for legacy
+// addSbtPlugin("org.scala-js"              % "sbt-scalajs"               % "1.16.0") //1.10 - for legacy
+addSbtPlugin("org.scala-js" % "sbt-scalajs" % "1.20.1")
 // addSbtPlugin("org.scala-js"              % "sbt-scalajs"               % "1.20.1")
 
 // addSbtPlugin("io.spray"                  % "sbt-revolver"              % "0.9.1") //

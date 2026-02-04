@@ -1,4 +1,4 @@
-package com.driveleaders.persistence
+package com.escalatorstarter.persistence
 
 object CustomNameMapper {
 	// make configuration / add a common list of mappings

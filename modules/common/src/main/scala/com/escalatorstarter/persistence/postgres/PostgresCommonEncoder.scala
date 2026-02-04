@@ -57,7 +57,7 @@ trait PostgresCommonEncoder {
   }
 
   protected def createAttributeTypeDecoder[T](constructor: String => T): ctx.Decoder[T] = {
-    println("createAttributeTypeDecoder " + constructor)
+    // println("createAttributeTypeDecoder " + constructor)
     ctx.decoder((index, row, session) => {
       val str = row.getString(index)
       val (_, ident) = parseAttributeType(str)
@@ -66,12 +66,12 @@ trait PostgresCommonEncoder {
   }
 
   protected def createAttributeTypeEncoder[T <: BaseAttributeType]: ctx.Encoder[T] = {
-    println("createAttributeTypeEncoder ")
+    // println("createAttributeTypeEncoder ")
     ctx.encoder(java.sql.Types.OTHER, (index, value, row) => {
       val pgObj = new org.postgresql.util.PGobject()
       pgObj.setType("attribute_type")
       pgObj.setValue(s"(${value.attr},${value.ident})")
-      println(s"(${value.attr},${value.ident})")
+      // println(s"(${value.attr},${value.ident})")
       row.setObject(index, pgObj, java.sql.Types.OTHER)
     })
   }

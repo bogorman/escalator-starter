@@ -101,7 +101,8 @@ object Dependencies {
 
   // "2.4.1"/
   // 2.5.11
-  val ammoniteSshd: ModuleID = "com.lihaoyi" % "ammonite-sshd" % "3.0.2" cross CrossVersion.full
+  // 3.0.2
+  val ammoniteSshd: ModuleID = "com.lihaoyi" % "ammonite-sshd" % "3.0.4" cross CrossVersion.full
 
   val circeGeneric: ModuleID = "io.circe" %% "circe-generic" % Versions.circeVersion
   val circeParser: ModuleID = "io.circe"  %% "circe-parser" % Versions.circeVersion

@@ -65,7 +65,7 @@ WORKDIR /app
 RUN apt-get update && \
     apt-get install -y curl && \
     rm -rf /var/lib/apt/lists/* && \
-    groupadd -r escalator && useradd -r -g escalator escalator
+    groupadd -r escalator && useradd -r -g escalator -m -d /home/escalator escalator
 
 # Copy built artifacts
 COPY --from=builder /app/modules/backend/target/universal/stage ./

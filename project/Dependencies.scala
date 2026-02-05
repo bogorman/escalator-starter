@@ -66,7 +66,8 @@ object Dependencies {
   val pekkoHttp: ModuleID = "org.apache.pekko" %% "pekko-http" % Versions.pekkoHttpVersion
   val pekkoSprayJson: ModuleID = "org.apache.pekko" %% "pekko-http-spray-json" % Versions.pekkoHttpVersion
   // val pekkoHttpCirce: ModuleID = "org.mdedetrich" %% "pekko-http-circe" % Versions.pekkoHttpVersion
-  val pekkoHttpCirce: ModuleID = "com.github.pjfanning" %% "pekko-http-circe" % "0.0.0_1-2d3e5833-SNAPSHOT"
+  // val pekkoHttpCirce: ModuleID = "com.github.pjfanning" %% "pekko-http-circe" % "0.0.0_1-2d3e5833-SNAPSHOT"
+  val pekkoHttpCirce: ModuleID = "com.github.pjfanning" %% "pekko-http-circe" % "3.2.2"
   //Versions.pekkoHttpVersion
 
   val commonsLang3: ModuleID = "org.apache.commons" % "commons-lang3" % "3.4"

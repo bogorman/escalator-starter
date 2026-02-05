@@ -4,7 +4,7 @@ import sbt.Keys._
 object JavaVersionCheck {
 
   // Define the required Java version
-  val requiredJavaVersion = "25"
+  val requiredJavaVersion = "21"
 
   // A helper function to extract the current Java version
   def getJavaVersion: String = {
@@ -19,7 +19,7 @@ object JavaVersionCheck {
   // Define an initialize task for Java version checking
   val javaVersionCheck: Def.Initialize[Unit] = Def.setting {
     val currentJavaVersion = getJavaVersion
-    if (currentJavaVersion != requiredJavaVersion) {
+    if (currentJavaVersion.toInt < requiredJavaVersion.toInt) {
       sys.error(
         s"Incompatible Java version detected: $currentJavaVersion. Required: $requiredJavaVersion."
       )

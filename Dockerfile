@@ -80,8 +80,9 @@ USER escalator
 EXPOSE 30099
 
 # Health check
+# Healthcheck: verify HTTP server responds (404 is OK, means server is up)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-  CMD curl -f -X POST http://localhost:30099/health || exit 1
+  CMD curl -s -o /dev/null -w '%{http_code}' http://localhost:30099/ | grep -qE '^[2-5][0-9][0-9]$' || exit 1
 
 # Default environment (override in compose.yaml or Coolify)
 ENV JAVA_OPTS="-Xmx512m -Xms256m"

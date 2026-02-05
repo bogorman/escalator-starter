@@ -84,32 +84,30 @@ upload_file() {
         --quiet
 }
 
-# Find and upload jars
+# Find and upload jars (Maven naming: artifactId-version.jar)
 if [ -d "$ARTIFACT_PATH/jars" ]; then
     for jar in "$ARTIFACT_PATH/jars"/*.jar; do
         if [ -f "$jar" ]; then
-            BASENAME=$(basename "$jar")
-            upload_file "$jar" "$MAVEN_PATH/$BASENAME"
+            # Main jar: name-version.jar
+            upload_file "$jar" "$MAVEN_PATH/${NAME}-${VERSION}.jar"
         fi
     done
 fi
 
-# Find and upload srcs
+# Find and upload srcs (Maven naming: artifactId-version-sources.jar)
 if [ -d "$ARTIFACT_PATH/srcs" ]; then
     for src in "$ARTIFACT_PATH/srcs"/*.jar; do
         if [ -f "$src" ]; then
-            BASENAME=$(basename "$src")
-            upload_file "$src" "$MAVEN_PATH/$BASENAME"
+            upload_file "$src" "$MAVEN_PATH/${NAME}-${VERSION}-sources.jar"
         fi
     done
 fi
 
-# Find and upload docs
+# Find and upload docs (Maven naming: artifactId-version-javadoc.jar)
 if [ -d "$ARTIFACT_PATH/docs" ]; then
     for doc in "$ARTIFACT_PATH/docs"/*.jar; do
         if [ -f "$doc" ]; then
-            BASENAME=$(basename "$doc")
-            upload_file "$doc" "$MAVEN_PATH/$BASENAME"
+            upload_file "$doc" "$MAVEN_PATH/${NAME}-${VERSION}-javadoc.jar"
         fi
     done
 fi

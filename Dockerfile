@@ -8,18 +8,20 @@
 # ----------------------------------------------------------------------------
 # Stage 1: Build everything (Scala backend + ScalaJS frontend + webpack)
 # ----------------------------------------------------------------------------
-FROM ghcr.io/graalvm/jdk-community:25 AS builder
+# Note: Using Temurin instead of GraalVM due to x86-64-v3 CPU requirement on GraalVM 25
+FROM eclipse-temurin:21-jdk AS builder
 
 WORKDIR /app
 
 # Install sbt
-RUN microdnf install -y curl tar gzip && \
+RUN apt-get update && apt-get install -y curl && \
     curl -fL https://github.com/sbt/sbt/releases/download/v1.10.7/sbt-1.10.7.tgz | tar xz -C /usr/local && \
-    ln -s /usr/local/sbt/bin/sbt /usr/local/bin/sbt
+    ln -s /usr/local/sbt/bin/sbt /usr/local/bin/sbt && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install Node.js for webpack
-RUN curl -fsSL https://rpm.nodesource.com/setup_20.x | bash - && \
-    microdnf install -y nodejs
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs
 
 # Cache sbt dependencies - copy only build definition files first
 COPY build.sbt version.sbt ./
@@ -49,12 +51,14 @@ RUN npm run build
 # ----------------------------------------------------------------------------
 # Stage 2: Runtime image
 # ----------------------------------------------------------------------------
-FROM ghcr.io/graalvm/jdk-community:25
+FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
-# Create non-root user
-RUN microdnf install -y shadow-utils && \
+# Create non-root user and install curl for healthcheck
+RUN apt-get update && \
+    apt-get install -y curl && \
+    rm -rf /var/lib/apt/lists/* && \
     groupadd -r escalator && useradd -r -g escalator escalator
 
 # Copy built artifacts

@@ -127,7 +127,8 @@ object FrontendDependencies {
     // Lightweight Charts from maven.escalator.dev (ScalablyTyped facade)
     val lightweightCharts: Def.Initialize[Seq[ModuleID]] = Def.setting {
       Seq(
-        "org.scalablytyped" % "lightweight-charts_sjs1_2.13" % "5.0.9-dea001"
+        "org.scalablytyped" % "lightweight-charts_sjs1_2.13" % "5.0.9-dea001",
+        "org.scalablytyped" %%% "scalablytyped-runtime" % "2.4.2"
       )
     }
 

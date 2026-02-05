@@ -3,11 +3,12 @@ import sbt._
 
 object DatabaseConfig {
 
-    def dbHost = System.getenv("DB_HOST")
-    def dbPort = System.getenv("DB_PORT").toInt
-    def dbUser = System.getenv("DB_USER")
-    def dbPass = System.getenv("DB_PASSWORD")
-    def dbName = System.getenv("DB_NAME")
+    // Use Option to handle missing env vars during Docker build
+    def dbHost = Option(System.getenv("DB_HOST")).getOrElse("localhost")
+    def dbPort = Option(System.getenv("DB_PORT")).map(_.toInt).getOrElse(5432)
+    def dbUser = Option(System.getenv("DB_USER")).getOrElse("postgres")
+    def dbPass = Option(System.getenv("DB_PASSWORD")).getOrElse("")
+    def dbName = Option(System.getenv("DB_NAME")).getOrElse("app")
 
   lazy val flywaySettings = Seq(
     flywayDriver := "org.postgresql.Driver",

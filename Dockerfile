@@ -23,6 +23,9 @@ RUN apt-get update && apt-get install -y curl && \
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get install -y nodejs
 
+# Install git for submodule clone
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
 # Cache sbt dependencies - copy only build definition files first
 COPY build.sbt version.sbt ./
 COPY project/build.properties project/plugins.sbt project/Common.scala project/Dependencies.scala project/Projects.scala project/Commands.scala project/JavaVersionCheck.scala project/R2Publishing.scala ./project/
@@ -33,6 +36,9 @@ RUN sbt update
 # Copy source code
 COPY modules ./modules
 COPY .scalafmt.conf ./
+
+# Clone escalator submodule (git submodules don't work with COPY)
+RUN git clone --depth 1 https://github.com/bogorman/escalator.git modules/escalator
 
 # Build the backend (creates distribution)
 RUN sbt backend/stage

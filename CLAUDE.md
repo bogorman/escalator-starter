@@ -86,6 +86,24 @@ sbt scalafmtAll                         # Format all Scala code using Scalafmt
 - Login/registration flow in frontend
 - Session management in `modules/backend/.../auth/session/`
 
+## Publishing Artifacts
+
+Shared Scala.js facades and libraries are published to `maven.escalator.dev` (Cloudflare R2).
+
+### Publishing a library
+```bash
+# Set R2 credentials (get from Cloudflare Dashboard → R2 → API Tokens)
+export R2_ACCOUNT_ID=xxx
+export R2_ACCESS_KEY_ID=xxx
+export R2_SECRET_ACCESS_KEY=xxx
+
+# Publish
+sbt <project>/publish
+```
+
+### Consuming artifacts
+Dependencies from maven.escalator.dev are auto-resolved (resolver already configured in Dependencies.scala).
+
 ## Important Configuration Files
 
 - `source_local.sh` - Database connection environment variables (update before running)

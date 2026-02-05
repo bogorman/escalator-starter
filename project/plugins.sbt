@@ -1,5 +1,8 @@
 addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "1.0.0")
 
+// R2/S3 publishing
+addSbtPlugin("com.frugalmechanic" % "fm-sbt-s3-resolver" % "0.23.0")
+
 addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "1.1.0")
 
 addSbtPlugin("io.github.davidmweber" % "flyway-sbt" % "7.4.0")

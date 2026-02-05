@@ -27,7 +27,9 @@ object Dependencies {
    //    Resolver.sonatypeRepo("releases")
    //  ) ++ Resolver.sonatypeOssRepos("snapshots")
 
-   val resolvers: Seq[Resolver] = Resolver.sonatypeOssRepos("snapshots")
+   val resolvers: Seq[Resolver] = Resolver.sonatypeOssRepos("snapshots") ++ Seq(
+     "Escalator Maven" at "https://maven.escalator.dev/releases"
+   )
 
 
   // val akkaActor: ModuleID = "com.typesafe.akka" %% "akka-actor" % Versions.akkaVersion

@@ -27,7 +27,7 @@ RUN yarn build
 # ----------------------------------------------------------------------------
 # Stage 2: Build Scala backend
 # ----------------------------------------------------------------------------
-FROM eclipse-temurin:21-jdk AS backend-builder
+FROM ghcr.io/graalvm/jdk-community:25 AS backend-builder
 
 WORKDIR /app
 
@@ -54,7 +54,7 @@ RUN sbt backend/stage
 # ----------------------------------------------------------------------------
 # Stage 3: Runtime image
 # ----------------------------------------------------------------------------
-FROM eclipse-temurin:21-jre
+FROM ghcr.io/graalvm/jdk-community:25
 
 WORKDIR /app
 

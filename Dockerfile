@@ -13,8 +13,8 @@ FROM node:20-alpine AS frontend-builder
 WORKDIR /app
 
 # Install frontend dependencies
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+COPY package.json package-lock.json ./
+RUN npm ci
 
 # Copy frontend source and build
 COPY webpack.config.js tailwind.config.js postcss.config.js ./
@@ -22,7 +22,7 @@ COPY modules/frontend/src/main/static ./modules/frontend/src/main/static
 
 # Build frontend assets
 ENV NODE_OPTIONS=--openssl-legacy-provider
-RUN yarn build
+RUN npm run build
 
 # ----------------------------------------------------------------------------
 # Stage 2: Build Scala backend

@@ -128,7 +128,7 @@ object FrontendDependencies {
     val lightweightCharts: Def.Initialize[Seq[ModuleID]] = Def.setting {
       Seq(
         "org.scalablytyped" % "lightweight-charts_sjs1_2.13" % "5.0.9-dea001",
-        "org.scalablytyped" %%% "scalablytyped-runtime" % "2.4.2"
+        "com.olvind" %%% "scalablytyped-runtime" % "2.4.2"
       )
     }
 

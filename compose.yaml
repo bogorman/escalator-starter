@@ -1,0 +1,68 @@
+# ============================================================================
+# Escalator Starter - Docker Compose
+# ============================================================================
+# Local dev:  docker compose up
+# Production: docker compose -f compose.yaml -f compose.prod.yaml up -d
+# ============================================================================
+
+services:
+  # --------------------------------------------------------------------------
+  # Application Backend
+  # --------------------------------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${APP_PORT:-30099}:30099"
+    environment:
+      # Database connection
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=${DB_USER:-escalator}
+      - DB_PASSWORD=${DB_PASSWORD:?DB_PASSWORD is required}
+      - DB_NAME=${DB_NAME:-escalator}
+      
+      # Authentication
+      - AUTH_PEPPER=${AUTH_PEPPER:?AUTH_PEPPER is required}
+      - API_FULL_ACCESS_TOKEN=${API_FULL_ACCESS_TOKEN:-}
+      
+      # Session management
+      - SESSION_CACHE_TYPE=${SESSION_CACHE_TYPE:-hybrid}
+      
+      # JVM options
+      - JAVA_OPTS=${JAVA_OPTS:--Xmx512m -Xms256m}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:30099/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+    restart: unless-stopped
+
+  # --------------------------------------------------------------------------
+  # PostgreSQL Database
+  # --------------------------------------------------------------------------
+  db:
+    image: postgres:18-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    environment:
+      - POSTGRES_USER=${DB_USER:-escalator}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:?DB_PASSWORD is required}
+      - POSTGRES_DB=${DB_NAME:-escalator}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-escalator} -d ${DB_NAME:-escalator}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    # Uncomment to expose DB port for local development
+    # ports:
+    #   - "${DB_PORT:-5432}:5432"
+
+volumes:
+  postgres_data:

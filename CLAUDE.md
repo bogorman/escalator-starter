@@ -2,6 +2,18 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Quick Start
+
+### Docker (Recommended for deployment)
+```bash
+cp .env.example .env
+# Edit .env with your secrets
+docker compose up -d
+```
+
+### Local Development
+See "Development Commands" below.
+
 ## Project Overview
 
 This is an eSCALAtor starter project - an opinionated full-stack Scala application with the following tech stack:

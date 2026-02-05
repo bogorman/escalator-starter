@@ -2,6 +2,43 @@
 
 Opinionated Full stack Scala starter project. Scala with some guide rails.
 
+## Quick Start with Docker
+
+```bash
+# 1. Copy environment template
+cp .env.example .env
+
+# 2. Edit .env with your secrets
+#    - Generate AUTH_PEPPER: openssl rand -hex 32
+#    - Generate API_FULL_ACCESS_TOKEN: openssl rand -hex 32
+#    - Set a strong DB_PASSWORD
+
+# 3. Start everything
+docker compose up -d
+
+# 4. Run migrations (first time only)
+docker compose exec app bin/backend dbMigrate
+docker compose exec app bin/backend dbSeed
+
+# 5. Open http://localhost:30099
+```
+
+### Deploy to Coolify
+
+1. Create a new application in Coolify
+2. Select **Docker Compose** as the build pack
+3. Point to your Git repository
+4. Add environment variables from `.env.example` in the Coolify UI
+5. Deploy!
+
+### Deploy to Uncloud
+
+```bash
+uncloud compose deploy -f compose.yaml
+```
+
+---
+
 - Scala 2.13
 - Akka + AkkaHttp
 - Laminar

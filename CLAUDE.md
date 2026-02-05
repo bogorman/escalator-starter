@@ -94,8 +94,8 @@ Shared Scala.js facades and libraries are published to `maven.escalator.dev` (Cl
 ```bash
 # Set R2 credentials (get from Cloudflare Dashboard → R2 → API Tokens)
 export R2_ACCOUNT_ID=xxx
-export R2_ACCESS_KEY_ID=xxx
-export R2_SECRET_ACCESS_KEY=xxx
+export AWS_ACCESS_KEY_ID=xxx      # R2 Access Key
+export AWS_SECRET_ACCESS_KEY=xxx  # R2 Secret Key
 
 # Publish
 sbt <project>/publish

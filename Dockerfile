@@ -6,64 +6,60 @@
 # ============================================================================
 
 # ----------------------------------------------------------------------------
-# Stage 1: Build frontend assets
+# Stage 1: Build everything (Scala backend + ScalaJS frontend + webpack)
 # ----------------------------------------------------------------------------
-FROM node:20-alpine AS frontend-builder
-
-WORKDIR /app
-
-# Install frontend dependencies
-COPY package.json package-lock.json ./
-RUN npm ci
-
-# Copy frontend source and build
-COPY webpack.config.js tailwind.config.js postcss.config.js ./
-COPY modules/frontend/src/main/static ./modules/frontend/src/main/static
-
-# Build frontend assets
-ENV NODE_OPTIONS=--openssl-legacy-provider
-RUN npm run build
-
-# ----------------------------------------------------------------------------
-# Stage 2: Build Scala backend
-# ----------------------------------------------------------------------------
-FROM ghcr.io/graalvm/jdk-community:25 AS backend-builder
+FROM ghcr.io/graalvm/jdk-community:25 AS builder
 
 WORKDIR /app
 
 # Install sbt
-RUN apt-get update && apt-get install -y curl && \
+RUN microdnf install -y curl tar gzip && \
     curl -fL https://github.com/sbt/sbt/releases/download/v1.10.7/sbt-1.10.7.tgz | tar xz -C /usr/local && \
-    ln -s /usr/local/sbt/bin/sbt /usr/local/bin/sbt && \
-    rm -rf /var/lib/apt/lists/*
+    ln -s /usr/local/sbt/bin/sbt /usr/local/bin/sbt
 
-# Cache dependencies - copy only build definition files first
+# Install Node.js for webpack
+RUN curl -fsSL https://rpm.nodesource.com/setup_20.x | bash - && \
+    microdnf install -y nodejs
+
+# Cache sbt dependencies - copy only build definition files first
 COPY build.sbt version.sbt ./
-COPY project/build.properties project/plugins.sbt project/Common.scala project/Dependencies.scala project/Projects.scala project/Commands.scala project/JavaVersionCheck.scala ./project/
+COPY project/build.properties project/plugins.sbt project/Common.scala project/Dependencies.scala project/Projects.scala project/Commands.scala project/JavaVersionCheck.scala project/R2Publishing.scala ./project/
 
-# Pre-fetch dependencies (this layer is cached unless build files change)
+# Pre-fetch sbt dependencies (this layer is cached unless build files change)
 RUN sbt update
 
 # Copy source code
 COPY modules ./modules
 COPY .scalafmt.conf ./
 
-# Build the backend
+# Build the backend (creates distribution)
 RUN sbt backend/stage
 
+# Build the ScalaJS frontend
+RUN sbt frontend/fullLinkJS
+
+# Install npm dependencies and build webpack
+COPY package.json package-lock.json webpack.config.js tailwind.config.js postcss.config.js scala-version.js ./
+RUN npm ci
+
+COPY modules/frontend/src/main/static ./modules/frontend/src/main/static
+ENV NODE_OPTIONS=--openssl-legacy-provider
+RUN npm run build
+
 # ----------------------------------------------------------------------------
-# Stage 3: Runtime image
+# Stage 2: Runtime image
 # ----------------------------------------------------------------------------
 FROM ghcr.io/graalvm/jdk-community:25
 
 WORKDIR /app
 
 # Create non-root user
-RUN groupadd -r escalator && useradd -r -g escalator escalator
+RUN microdnf install -y shadow-utils && \
+    groupadd -r escalator && useradd -r -g escalator escalator
 
 # Copy built artifacts
-COPY --from=backend-builder /app/modules/backend/target/universal/stage ./
-COPY --from=frontend-builder /app/modules/frontend/src/main/static/public ./public
+COPY --from=builder /app/modules/backend/target/universal/stage ./
+COPY --from=builder /app/modules/frontend/src/main/static/public ./public
 
 # Set ownership
 RUN chown -R escalator:escalator /app

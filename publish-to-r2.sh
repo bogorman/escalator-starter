@@ -85,25 +85,34 @@ upload_file() {
 }
 
 # Find and upload jars
-for jar in "$ARTIFACT_PATH/jars"/*.jar 2>/dev/null; do
-    [ -f "$jar" ] || continue
-    BASENAME=$(basename "$jar")
-    upload_file "$jar" "$MAVEN_PATH/$BASENAME"
-done
+if [ -d "$ARTIFACT_PATH/jars" ]; then
+    for jar in "$ARTIFACT_PATH/jars"/*.jar; do
+        if [ -f "$jar" ]; then
+            BASENAME=$(basename "$jar")
+            upload_file "$jar" "$MAVEN_PATH/$BASENAME"
+        fi
+    done
+fi
 
 # Find and upload srcs
-for src in "$ARTIFACT_PATH/srcs"/*.jar 2>/dev/null; do
-    [ -f "$src" ] || continue
-    BASENAME=$(basename "$src")
-    upload_file "$src" "$MAVEN_PATH/$BASENAME"
-done
+if [ -d "$ARTIFACT_PATH/srcs" ]; then
+    for src in "$ARTIFACT_PATH/srcs"/*.jar; do
+        if [ -f "$src" ]; then
+            BASENAME=$(basename "$src")
+            upload_file "$src" "$MAVEN_PATH/$BASENAME"
+        fi
+    done
+fi
 
 # Find and upload docs
-for doc in "$ARTIFACT_PATH/docs"/*.jar 2>/dev/null; do
-    [ -f "$doc" ] || continue
-    BASENAME=$(basename "$doc")
-    upload_file "$doc" "$MAVEN_PATH/$BASENAME"
-done
+if [ -d "$ARTIFACT_PATH/docs" ]; then
+    for doc in "$ARTIFACT_PATH/docs"/*.jar; do
+        if [ -f "$doc" ]; then
+            BASENAME=$(basename "$doc")
+            upload_file "$doc" "$MAVEN_PATH/$BASENAME"
+        fi
+    done
+fi
 
 # Convert ivy.xml to pom.xml (basic conversion)
 IVY_XML="$ARTIFACT_PATH/ivys/ivy.xml"

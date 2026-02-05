@@ -28,7 +28,7 @@ object R2Publishing {
     publishTo := {
       val accountId = sys.env.get("R2_ACCOUNT_ID")
       accountId.map { id =>
-        "Escalator R2" at s"s3://$id.r2.cloudflarestorage.com/maven/releases"
+        "Escalator R2" at s"s3://$id.r2.cloudflarestorage.com/scalajs-artifacts/releases"
       }
     },
 

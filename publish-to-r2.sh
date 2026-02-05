@@ -41,10 +41,10 @@ fi
 
 # R2 endpoint
 R2_ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
-BUCKET="maven"
+BUCKET="scalajs-artifacts"
 
 # Convert org to path (com.example -> com/example)
-ORG_PATH="${ORG//./\/}"
+ORG_PATH=$(echo "$ORG" | tr '.' '/')
 
 # Ivy local cache paths to search
 IVY_LOCAL="$HOME/.ivy2/local"

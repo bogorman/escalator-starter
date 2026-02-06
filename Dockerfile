@@ -74,7 +74,7 @@ RUN apt-get update && \
 
 # Copy built artifacts
 COPY --from=builder /app/modules/backend/target/universal/stage ./
-COPY --from=builder /app/modules/frontend/src/main/static/public ./public
+COPY --from=builder /app/dist ./public
 
 # Set ownership
 RUN chown -R escalator:escalator /app
@@ -107,7 +107,8 @@ RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy built static files from builder
-COPY --from=builder /app/modules/frontend/src/main/static/public /usr/share/nginx/html
+# Copy built static files from builder (webpack outputs to dist/)
+COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \

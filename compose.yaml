@@ -74,6 +74,7 @@ services:
   db:
     image: postgres:18-alpine
     volumes:
+      # Mount at /var/lib/postgresql (not /data) for pg_upgrade compatibility
       - postgres_data:/var/lib/postgresql
     environment:
       - POSTGRES_USER=${DB_USER:-postgres}

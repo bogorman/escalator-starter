@@ -66,16 +66,28 @@ FROM eclipse-temurin:21-jre AS runtime
 
 WORKDIR /app
 
-# Cache bust v2
-# Create non-root user with home directory and install curl for healthcheck
+# Create non-root user with home directory and install curl + flyway
 RUN apt-get update && \
     apt-get install -y curl && \
     rm -rf /var/lib/apt/lists/* && \
     groupadd -r escalator && useradd -r -g escalator -m -d /home/escalator escalator
 
+# Install Flyway for database migrations
+ARG FLYWAY_VERSION=10.10.0
+RUN curl -fsSL https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/${FLYWAY_VERSION}/flyway-commandline-${FLYWAY_VERSION}-linux-x64.tar.gz | tar xz -C /opt && \
+    ln -s /opt/flyway-${FLYWAY_VERSION}/flyway /usr/local/bin/flyway
+
 # Copy built artifacts
 COPY --from=builder /app/modules/backend/target/universal/stage ./
 COPY --from=builder /app/dist ./public
+
+# Copy database migrations and seeds (if they exist)
+COPY db/migrations ./db/migrations/ 2>/dev/null || true
+COPY db/seeds ./db/seeds/ 2>/dev/null || true
+
+# Copy entrypoint script
+COPY docker-entrypoint.sh /app/
+RUN chmod +x /app/docker-entrypoint.sh
 
 # Set ownership
 RUN chown -R escalator:escalator /app
@@ -93,8 +105,8 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
 # Default environment (override in compose.yaml or Coolify)
 ENV JAVA_OPTS="-Xmx512m -Xms256m"
 
-# Run the application
-ENTRYPOINT ["bin/backend"]
+# Run the application (entrypoint handles migrations)
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
 
 # ----------------------------------------------------------------------------
 # Stage 3: Nginx for serving static files + proxying to backend

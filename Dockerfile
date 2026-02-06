@@ -81,9 +81,9 @@ RUN curl -fsSL https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/${
 COPY --from=builder /app/modules/backend/target/universal/stage ./
 COPY --from=builder /app/dist ./public
 
-# Copy database migrations and seeds (if they exist)
-COPY db/migrations ./db/migrations/ 2>/dev/null || true
-COPY db/seeds ./db/seeds/ 2>/dev/null || true
+# Copy database migrations and seeds
+# Note: Create empty db/migrations and db/seeds folders or remove these lines if not using migrations
+COPY db ./db/
 
 # Copy entrypoint script
 COPY docker-entrypoint.sh /app/

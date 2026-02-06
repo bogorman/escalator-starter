@@ -27,14 +27,15 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
 # Java 21 module opens for Quill/Kryo serialization during macro expansion
-ENV SBT_OPTS="-Xmx2g --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.lang.invoke=ALL-UNNAMED"
+# Increase memory and add all required module opens
+ENV SBT_OPTS="-Xmx8g -Xms4g -Xss512m --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED --add-opens java.base/java.lang.invoke=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED"
 
 # Cache sbt dependencies - copy only build definition files first
 COPY build.sbt version.sbt ./
 COPY project/build.properties project/plugins.sbt project/*.scala ./project/
 
 # Pre-fetch sbt dependencies (this layer is cached unless build files change)
-RUN sbt update
+RUN sbt --error update
 
 # Copy source code
 COPY modules ./modules
@@ -44,11 +45,11 @@ COPY .scalafmt.conf ./
 # Remove any existing directory first (may exist from COPY if checked in)
 RUN rm -rf modules/escalator && git clone --depth 1 https://github.com/bogorman/escalator.git modules/escalator
 
-# Build the backend (creates distribution)
-RUN sbt backend/stage
+# Build the backend (creates distribution) - use --error to suppress warnings
+RUN sbt --error backend/stage
 
 # Build the ScalaJS frontend
-RUN sbt frontend/fullLinkJS
+RUN sbt --error frontend/fullLinkJS
 
 # Install npm dependencies and build webpack
 COPY package.json package-lock.json webpack.config.js tailwind.config.js postcss.config.js scala-version.js ./
@@ -106,7 +107,6 @@ RUN rm /etc/nginx/conf.d/default.conf
 # Copy nginx config
 COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copy built static files from builder
 # Copy built static files from builder (webpack outputs to dist/)
 COPY --from=builder /app/dist /usr/share/nginx/html
 

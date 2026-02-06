@@ -1,8 +1,8 @@
 # ============================================================================
 # Escalator Starter - Docker Compose
 # ============================================================================
-# For Coolify: Database is managed separately via Coolify DB resource
-# For local dev: Use compose.local.yaml override to add a local db service
+# Local dev:  docker compose up
+# Production: docker compose -f compose.yaml -f compose.prod.yaml up -d
 # ============================================================================
 
 services:
@@ -41,15 +41,15 @@ services:
     expose:
       - "30099"
     environment:
-      # Database connection - set via Coolify env vars
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT:-5432}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME}
+      # Database connection
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-changeme}
+      - DB_NAME=${DB_NAME:-app_db}
       
       # Authentication
-      - AUTH_PEPPER=${AUTH_PEPPER}
+      - AUTH_PEPPER=${AUTH_PEPPER:-default_pepper_change_me}
       - API_FULL_ACCESS_TOKEN=${API_FULL_ACCESS_TOKEN:-}
       
       # Session management
@@ -57,6 +57,9 @@ services:
       
       # JVM options
       - JAVA_OPTS=${JAVA_OPTS:--Xmx512m -Xms256m}
+    depends_on:
+      db:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-s", "-o", "/dev/null", "-w", "%{http_code}", "http://localhost:30099/"]
       interval: 30s
@@ -65,21 +68,23 @@ services:
       retries: 3
     restart: unless-stopped
 
-# Note: For local development, create compose.local.yaml with:
-#
-# services:
-#   db:
-#     image: postgres:18-alpine
-#     ports:
-#       - "5432:5432"
-#     environment:
-#       - POSTGRES_USER=postgres
-#       - POSTGRES_PASSWORD=localpass
-#       - POSTGRES_DB=app_db
-#     volumes:
-#       - postgres_data:/var/lib/postgresql
-#
-# volumes:
-#   postgres_data:
-#
-# Then run: docker compose -f compose.yaml -f compose.local.yaml up
+  # --------------------------------------------------------------------------
+  # PostgreSQL Database
+  # --------------------------------------------------------------------------
+  db:
+    image: postgres:18-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    environment:
+      - POSTGRES_USER=${DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-changeme}
+      - POSTGRES_DB=${DB_NAME:-app_db}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-app_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

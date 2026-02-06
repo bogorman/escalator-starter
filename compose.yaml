@@ -2,51 +2,30 @@
 # Escalator Starter - Docker Compose
 # ============================================================================
 # Local dev:  docker compose up
-# Production: docker compose -f compose.yaml -f compose.prod.yaml up -d
+# Production: Deploy to Coolify with external DB
 # ============================================================================
 
 services:
   # --------------------------------------------------------------------------
-  # Nginx - Entry point (serves static files + proxies to backend)
-  # --------------------------------------------------------------------------
-  nginx:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: nginx
-    # Don't bind host ports - Coolify/Traefik handles external routing
-    # Domain is configured in Coolify UI (Domains for nginx)
-    expose:
-      - "80"
-    depends_on:
-      app:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost/nginx-health"]
-      interval: 30s
-      timeout: 5s
-      start_period: 10s
-      retries: 3
-    restart: unless-stopped
-
-  # --------------------------------------------------------------------------
-  # Application Backend
+  # Application (serves both API and static files)
   # --------------------------------------------------------------------------
   app:
     build:
       context: .
       dockerfile: Dockerfile
       target: runtime
-    # No external port - only accessible via nginx
-    expose:
-      - "30099"
+    ports:
+      - "30099:30099"
     environment:
-      # Database connection
-      - DB_HOST=db
-      - DB_PORT=5432
+      # Database connection (use Coolify-managed DB in production)
+      - DB_HOST=${DB_HOST:-localhost}
+      - DB_PORT=${DB_PORT:-5432}
       - DB_USER=${DB_USER:-postgres}
       - DB_PASSWORD=${DB_PASSWORD:-changeme}
       - DB_NAME=${DB_NAME:-app_db}
+      
+      # Static files directory (set in Dockerfile, can override)
+      - STATIC_DIR=${STATIC_DIR:-/app/public}
       
       # Authentication
       - AUTH_PEPPER=${AUTH_PEPPER:-default_pepper_change_me}
@@ -57,9 +36,6 @@ services:
       
       # JVM options
       - JAVA_OPTS=${JAVA_OPTS:--Xmx512m -Xms256m}
-    depends_on:
-      db:
-        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-s", "-o", "/dev/null", "-w", "%{http_code}", "http://localhost:30099/"]
       interval: 30s
@@ -68,24 +44,8 @@ services:
       retries: 3
     restart: unless-stopped
 
-  # --------------------------------------------------------------------------
-  # PostgreSQL Database
-  # --------------------------------------------------------------------------
-  db:
-    image: postgres:18-alpine
-    volumes:
-      # Mount at /var/lib/postgresql (not /data) for pg_upgrade compatibility
-      - postgres_data:/var/lib/postgresql
-    environment:
-      - POSTGRES_USER=${DB_USER:-postgres}
-      - POSTGRES_PASSWORD=${DB_PASSWORD:-changeme}
-      - POSTGRES_DB=${DB_NAME:-app_db}
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-app_db}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
-
-volumes:
-  postgres_data:
+# For Coolify: add external network to reach Coolify-managed database
+# networks:
+#   default:
+#   coolify:
+#     external: true

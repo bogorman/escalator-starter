@@ -2,6 +2,7 @@ package com.escalatorstarter.http.server
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.io.Source
+import java.io.File
 
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.http.scaladsl.Http
@@ -35,6 +36,10 @@ import escalator.util.Configuration
 import com.typesafe.config.Config
 
 object EscalatorStarterHttpServer {
+  
+  // Static files directory from environment variable
+  private val staticDir: Option[String] = sys.env.get("STATIC_DIR").filter(_.nonEmpty)
+  
   def start(
     auth: AdminAuthentication,
     sessionCache: SessionCache
@@ -50,6 +55,9 @@ object EscalatorStarterHttpServer {
       timestampProvider: TimestampProvider,
       config: Config
   ): Future[ServerBinding] = {
+    
+    staticDir.foreach(dir => println(s"Serving static files from: $dir"))
+    
    val bindingFuture =
       Http()
         .newServerAt(
@@ -84,7 +92,34 @@ object EscalatorStarterHttpServer {
   ): Route = {
 
       val routes = new EscalatorStarterRoutes(sessionCache)
-      routes.route
-
+      
+      // Combine API routes with static file serving
+      staticDir match {
+        case Some(dir) =>
+          // API routes first, then static files, then SPA fallback
+          routes.route ~ staticRoutes(dir)
+        case None =>
+          // No static serving - API only
+          routes.route
+      }
+  }
+  
+  /**
+   * Static file routes with SPA fallback.
+   * - Serves files from STATIC_DIR
+   * - Falls back to index.html for SPA routing (client-side routes)
+   */
+  private def staticRoutes(dir: String): Route = {
+    // Try to serve file from directory, fall back to index.html for SPA
+    pathEndOrSingleSlash {
+      getFromFile(s"$dir/index.html")
+    } ~
+    // Serve static assets (js, css, images, etc.)
+    getFromDirectory(dir) ~
+    // SPA fallback: any unmatched route returns index.html
+    // (client-side router handles the route)
+    extractUnmatchedPath { _ =>
+      getFromFile(s"$dir/index.html")
+    }
   }
 }

@@ -60,7 +60,7 @@ ENV NODE_OPTIONS=--openssl-legacy-provider
 RUN npm run build
 
 # ----------------------------------------------------------------------------
-# Stage 2: Runtime image
+# Stage 2: Runtime image (serves both API and static files)
 # ----------------------------------------------------------------------------
 FROM eclipse-temurin:21-jre AS runtime
 
@@ -72,58 +72,44 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     groupadd -r escalator && useradd -r -g escalator -m -d /home/escalator escalator
 
-# Install Flyway for database migrations
-ARG FLYWAY_VERSION=10.10.0
-RUN curl -fsSL https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/${FLYWAY_VERSION}/flyway-commandline-${FLYWAY_VERSION}-linux-x64.tar.gz | tar xz -C /opt && \
+# Install Flyway and set permissions for escalator user
+ENV FLYWAY_VERSION=10.6.0
+RUN curl -fL https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/${FLYWAY_VERSION}/flyway-commandline-${FLYWAY_VERSION}-linux-x64.tar.gz \
+    | tar xz -C /opt && \
+    chmod -R a+rx /opt/flyway-${FLYWAY_VERSION} && \
     ln -s /opt/flyway-${FLYWAY_VERSION}/flyway /usr/local/bin/flyway
 
 # Copy built artifacts
 COPY --from=builder /app/modules/backend/target/universal/stage ./
+
+# Copy static files to public directory (served by backend)
 COPY --from=builder /app/dist ./public
 
 # Copy database migrations and seeds
-# Note: Create empty db/migrations and db/seeds folders or remove these lines if not using migrations
-COPY db ./db/
+COPY modules/db/migration ./db/migration
+COPY modules/db/seed ./db/seed
 
 # Copy entrypoint script
-COPY docker-entrypoint.sh /app/
-RUN chmod +x /app/docker-entrypoint.sh
+COPY docker-entrypoint.sh ./
+RUN chmod +x docker-entrypoint.sh
 
 # Set ownership
 RUN chown -R escalator:escalator /app
 
 USER escalator
 
-# Expose backend port
+# Expose backend port (serves both API and static files)
 EXPOSE 30099
 
 # Health check
-# Healthcheck: verify HTTP server responds (404 is OK, means server is up)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
   CMD curl -s -o /dev/null -w '%{http_code}' http://localhost:30099/ | grep -qE '^[2-5][0-9][0-9]$' || exit 1
 
 # Default environment (override in compose.yaml or Coolify)
 ENV JAVA_OPTS="-Xmx512m -Xms256m"
 
-# Run the application (entrypoint handles migrations)
-ENTRYPOINT ["/app/docker-entrypoint.sh"]
+# Static files directory - backend serves files from here
+ENV STATIC_DIR="/app/public"
 
-# ----------------------------------------------------------------------------
-# Stage 3: Nginx for serving static files + proxying to backend
-# ----------------------------------------------------------------------------
-FROM nginx:alpine AS nginx
-
-# Remove default config
-RUN rm /etc/nginx/conf.d/default.conf
-
-# Copy nginx config
-COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
-
-# Copy built static files from builder (webpack outputs to dist/)
-COPY --from=builder /app/dist /usr/share/nginx/html
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget -q --spider http://localhost/nginx-health || exit 1
-
-EXPOSE 80
+# Run migrations then start the application
+ENTRYPOINT ["./docker-entrypoint.sh"]

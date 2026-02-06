@@ -26,9 +26,12 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
 # Install git for submodule clone
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
+# Java 21 module opens for Quill/Kryo serialization during macro expansion
+ENV SBT_OPTS="-Xmx2g --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.lang.invoke=ALL-UNNAMED"
+
 # Cache sbt dependencies - copy only build definition files first
 COPY build.sbt version.sbt ./
-COPY project/build.properties project/plugins.sbt project/Common.scala project/Dependencies.scala project/Projects.scala project/Commands.scala project/JavaVersionCheck.scala project/R2Publishing.scala ./project/
+COPY project/build.properties project/plugins.sbt project/*.scala ./project/
 
 # Pre-fetch sbt dependencies (this layer is cached unless build files change)
 RUN sbt update
@@ -38,7 +41,8 @@ COPY modules ./modules
 COPY .scalafmt.conf ./
 
 # Clone escalator submodule (git submodules don't work with COPY)
-RUN git clone --depth 1 https://github.com/bogorman/escalator.git modules/escalator
+# Remove any existing directory first (may exist from COPY if checked in)
+RUN rm -rf modules/escalator && git clone --depth 1 https://github.com/bogorman/escalator.git modules/escalator
 
 # Build the backend (creates distribution)
 RUN sbt backend/stage
@@ -57,11 +61,12 @@ RUN npm run build
 # ----------------------------------------------------------------------------
 # Stage 2: Runtime image
 # ----------------------------------------------------------------------------
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:21-jre AS runtime
 
 WORKDIR /app
 
-# Create non-root user and install curl for healthcheck
+# Cache bust v2
+# Create non-root user with home directory and install curl for healthcheck
 RUN apt-get update && \
     apt-get install -y curl && \
     rm -rf /var/lib/apt/lists/* && \
@@ -89,3 +94,23 @@ ENV JAVA_OPTS="-Xmx512m -Xms256m"
 
 # Run the application
 ENTRYPOINT ["bin/backend"]
+
+# ----------------------------------------------------------------------------
+# Stage 3: Nginx for serving static files + proxying to backend
+# ----------------------------------------------------------------------------
+FROM nginx:alpine AS nginx
+
+# Remove default config
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Copy nginx config
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copy built static files from builder
+COPY --from=builder /app/modules/frontend/src/main/static/public /usr/share/nginx/html
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD wget -q --spider http://localhost/nginx-health || exit 1
+
+EXPOSE 80

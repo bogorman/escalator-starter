@@ -46,10 +46,26 @@ COPY .scalafmt.conf ./
 RUN rm -rf modules/escalator && git clone --depth 1 https://github.com/bogorman/escalator.git modules/escalator
 
 # Build the backend (creates distribution) - use --error to suppress warnings
-RUN sbt --error backend/stage
+# Cache mounts persist sbt compilation output (target dirs) across builds for incremental compilation
+RUN --mount=type=cache,target=/app/modules/escalator/target \
+    --mount=type=cache,target=/app/modules/backend/target \
+    --mount=type=cache,target=/app/modules/shared/target \
+    --mount=type=cache,target=/app/modules/frontend/target \
+    --mount=type=cache,target=/app/project/target \
+    --mount=type=cache,target=/root/.sbt \
+    --mount=type=cache,target=/root/.cache/coursier \
+    sbt --error backend/stage && \
+    cp -r /app/modules/backend/target/universal/stage /app/backend-stage
 
 # Build the ScalaJS frontend
-RUN sbt --error frontend/fullLinkJS
+RUN --mount=type=cache,target=/app/modules/escalator/target \
+    --mount=type=cache,target=/app/modules/backend/target \
+    --mount=type=cache,target=/app/modules/shared/target \
+    --mount=type=cache,target=/app/modules/frontend/target \
+    --mount=type=cache,target=/app/project/target \
+    --mount=type=cache,target=/root/.sbt \
+    --mount=type=cache,target=/root/.cache/coursier \
+    sbt --error frontend/fullLinkJS
 
 # Install npm dependencies and build webpack
 COPY package.json package-lock.json webpack.config.js tailwind.config.js postcss.config.js scala-version.js ./
@@ -57,7 +73,9 @@ RUN npm ci
 
 COPY modules/frontend/src/main/static ./modules/frontend/src/main/static
 ENV NODE_OPTIONS=--openssl-legacy-provider
-RUN npm run build
+# Webpack needs access to frontend target dir for the ScalaJS output
+RUN --mount=type=cache,target=/app/modules/frontend/target \
+    npm run build
 
 # ----------------------------------------------------------------------------
 # Stage 2: Runtime image (serves both API and static files)
@@ -80,7 +98,7 @@ RUN curl -fL https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/${FL
     ln -s /opt/flyway-${FLYWAY_VERSION}/flyway /usr/local/bin/flyway
 
 # Copy built artifacts
-COPY --from=builder /app/modules/backend/target/universal/stage ./
+COPY --from=builder /app/backend-stage ./
 
 # Copy static files to public directory (served by backend)
 COPY --from=builder /app/dist ./public
